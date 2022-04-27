@@ -1,4 +1,5 @@
 import { configBuilder, configLoader, load } from "builders/basic";
+import { populateLoaderFromEnvironment } from "loaders/environment";
 import { buildObjectFromKeys } from "utils/build";
 
 export interface dynamicConfigBuilder extends configBuilder<dynamicConfigBuilder> {
@@ -12,9 +13,7 @@ export function dynamicConfigLoader(): dynamicConfigBuilder {
   
   return {
     addFromEnvironment(prefix: string = ""): dynamicConfigBuilder {
-      loaders.environment.push({
-        prefix,
-      })
+      populateLoaderFromEnvironment(loaders, prefix);
       return this;
     },
     load() {

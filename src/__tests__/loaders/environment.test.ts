@@ -1,4 +1,4 @@
-import { loadFromEnvironment } from '../../loaders/environment';
+import { getKeysFromEnvironment } from '../../loaders/environment';
 
 describe('Environment loader', () => {
   beforeAll(() => {
@@ -20,7 +20,7 @@ describe('Environment loader', () => {
   }
 
   test('key parsing without prefix', () => {
-    checkIfArrayHas(loadFromEnvironment([{ prefix: "" }]), [
+    checkIfArrayHas(getKeysFromEnvironment([{ prefix: "" }]), [
       { key: "test1", value: "abc" },
       { key: "test2", value: "def" },
       { key: "test3", value: "ghi" },
@@ -28,7 +28,7 @@ describe('Environment loader', () => {
   });
 
   test('key parsing with prefix', () => {
-    checkIfArrayHas(loadFromEnvironment([{ prefix: "test" }]), [
+    checkIfArrayHas(getKeysFromEnvironment([{ prefix: "test" }]), [
       { key: "1", value: "abc" },
       { key: "2", value: "def" },
       { key: "3", value: "ghi" },
@@ -36,7 +36,7 @@ describe('Environment loader', () => {
   });
 
   test('loading multiple environments', () => {
-    checkIfArrayHas(loadFromEnvironment([{ prefix: "test" }, { prefix: "" }]), [
+    checkIfArrayHas(getKeysFromEnvironment([{ prefix: "test" }, { prefix: "" }]), [
       { key: "test1", value: "abc" },
       { key: "test2", value: "def" },
       { key: "test3", value: "ghi" },

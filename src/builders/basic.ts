@@ -1,5 +1,5 @@
 import { configKeys } from "loaders/base";
-import { environmentLoader, loadFromEnvironment } from "loaders/environment";
+import { environmentLoader, getKeysFromEnvironment } from "loaders/environment";
 
 export interface configLoader {
   environment: environmentLoader[]
@@ -11,7 +11,7 @@ export interface configBuilder<T> {
 
 export function load(loaders: configLoader): configKeys {
   const keys: configKeys = [
-    loadFromEnvironment(loaders.environment),
+    getKeysFromEnvironment(loaders.environment),
   ].flat();
   return keys;
 }

@@ -1,10 +1,17 @@
+import { configLoader } from "builders/basic";
 import { configKeys } from "loaders/base";
 
 export interface environmentLoader {
   prefix: string;
 }
 
-export function loadFromEnvironment(loaders: environmentLoader[]): configKeys {
+export function populateLoaderFromEnvironment(loader: configLoader, prefix: string) {
+  loader.environment.push({
+    prefix,
+  })
+}
+
+export function getKeysFromEnvironment(loaders: environmentLoader[]): configKeys {
   const prefixes: string[] = loaders.map(v=>v.prefix);
   const keys: configKeys = [];
   Object.entries(process.env).forEach(v => {
