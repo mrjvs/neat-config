@@ -1,6 +1,6 @@
 {
   "name": "cool-config",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Yet another config library, specialized for cloud deployment",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

@@ -7,11 +7,13 @@ But specialized for cloud deployment this time
 
 # features
 
-- fully typed configurations
-- load configuration from many inputs:
+- strictly typed configurations
+- load (partial) configuration from many inputs:
   - from files: `.json`, `.env`
   - from environment variables
-  - from directory structure (i.e docker secrets)
+  - from directory structure (used for i.e docker secrets)
+- 100% test coverage
+- 0 dependecies
 
 # install
 
@@ -54,8 +56,10 @@ interface configSchema {
     text: string,
   };
 }
-const configWithSchemaTypescript =
-  schemaConfigLoader < configSchema > schema.addFromEnvironment().addFromFile('.env').load();
+const configWithSchemaTypescript = schemaConfigLoader<configSchema>()
+  .addFromEnvironment()
+  .addFromFile('.env')
+  .load();
 console.log(configWithSchemaTypescript.example.test);
 ```
 
