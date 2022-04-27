@@ -1,1 +1,1 @@
-export const oof = "test";
+export { dynamicConfigLoader } from "builders/dynamic";

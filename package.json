@@ -2,7 +2,8 @@
   "name": "cool-config",
   "version": "1.0.0",
   "description": "Yet another config library, specialized for cloud deployment",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
