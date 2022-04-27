@@ -1,0 +1,39 @@
+{
+  "name": "cool-config",
+  "version": "1.0.0",
+  "description": "Yet another config library, specialized for cloud deployment",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "test": "jest --config jestconfig.json",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrjvs/cool-config.git"
+  },
+  "keywords": [
+    "config"
+  ],
+  "author": "mrjvs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrjvs/cool-config/issues"
+  },
+  "homepage": "https://github.com/mrjvs/cool-config#readme",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.2",
+    "ts-jest": "^27.1.4",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.6.3"
+  },
+  "files": [
+    "lib/**/*"
+  ]
+}
