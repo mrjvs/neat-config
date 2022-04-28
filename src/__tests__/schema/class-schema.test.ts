@@ -12,6 +12,7 @@ class SimpleClassSchema {
   hello!: string;
 }
 
+// TODO do deep validation checks
 describe('class schema validation tests', () => {
   test('invalid class schema', () => {
     const createConfig = () => createConfigLoader().addClassSchema(InvalidClassSchema);
