@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { basename } from "path";
-import { configLoader } from "builders/basic";
+import { configLoader } from "builder/base";
 import { configKeys } from "loaders/base";
 import { loadKeysFromJsonFileData } from "./files/json";
 

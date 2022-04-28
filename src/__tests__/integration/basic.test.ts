@@ -1,4 +1,4 @@
-import { dynamicConfigLoader } from "../..";
+import { createConfigLoader } from "../..";
 
 describe("integration tests - basic", () => {
   test("load dynamic config", () => {
@@ -6,7 +6,7 @@ describe("integration tests - basic", () => {
       "L1__L2__L3": "test",
       "HI": "test2",
     }
-    const config = dynamicConfigLoader()
+    const config = createConfigLoader()
       .addFromEnvironment()
       .load();
     expect(config).toStrictEqual({
@@ -15,7 +15,7 @@ describe("integration tests - basic", () => {
     })
   })
   test("load empty config", () => {
-    const config = dynamicConfigLoader()
+    const config = createConfigLoader()
       .load();
     expect(config).toStrictEqual({})
   })

@@ -1,1 +1,1 @@
-export { dynamicConfigLoader } from "builders/dynamic";
+export { createConfigLoader } from "builder/builder";

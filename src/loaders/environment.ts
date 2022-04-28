@@ -1,4 +1,4 @@
-import { configLoader } from "builders/basic";
+import { configLoader } from "builder/base";
 import { configKeys } from "loaders/base";
 
 export interface environmentLoader {
