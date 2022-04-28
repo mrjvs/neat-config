@@ -4,5 +4,6 @@
   "editor.detectIndentation": false,
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "js/ts.implicitProjectConfig.experimentalDecorators": true
 }

@@ -1,18 +1,18 @@
-import { configBuilder, configLoader, loadLoaders } from "builder/base";
-import { populateLoaderFromEnvironment } from "loaders/environment";
-import { ParserTypes, ParserTypesType, populateLoaderFromFile } from "loaders/file";
-import { buildObjectFromKeys } from "utils/build";
-import { configSchema, configSchemaType, validateObjectWithSchema, validateSchema } from "./schema";
+import { configBuilder, configLoader, loadLoaders } from 'builder/base';
+import { populateLoaderFromEnvironment } from 'loaders/environment';
+import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
+import { buildObjectFromKeys } from 'utils/build';
+import { configSchema, configSchemaType, validateObjectWithSchema, validateSchema } from './schema';
 
 export function createConfigLoader(): configBuilder<any> {
   const loaders: configLoader = {
     environment: [],
     files: [],
-  }
+  };
   let schema: configSchema | null = null;
 
   return {
-    addFromEnvironment(prefix: string = ""): configBuilder<any> {
+    addFromEnvironment(prefix: string = ''): configBuilder<any> {
       populateLoaderFromEnvironment(loaders, prefix);
       return this;
     },
@@ -24,7 +24,7 @@ export function createConfigLoader(): configBuilder<any> {
       schema = {
         type: configSchemaType.JSON,
         schema: jsonSchema,
-      }
+      };
       validateSchema(schema);
       return this;
     },
@@ -32,7 +32,7 @@ export function createConfigLoader(): configBuilder<any> {
       schema = {
         type: configSchemaType.CLASS,
         schema: classSchema,
-      }
+      };
       validateSchema(schema);
       return this;
     },
@@ -41,6 +41,6 @@ export function createConfigLoader(): configBuilder<any> {
       const output = buildObjectFromKeys(keys);
       validateObjectWithSchema(output, schema);
       return output;
-    }
-  }
+    },
+  };
 }

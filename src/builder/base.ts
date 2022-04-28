@@ -1,10 +1,10 @@
-import { configKeys } from "loaders/base";
-import { environmentLoader, getKeysFromEnvironment } from "loaders/environment";
-import { fileLoader, ParserTypesType } from "loaders/file";
+import { configKeys } from 'loaders/base';
+import { environmentLoader, getKeysFromEnvironment } from 'loaders/environment';
+import { fileLoader, ParserTypesType } from 'loaders/file';
 
 export interface configLoader {
-  environment: environmentLoader[],
-  files: fileLoader[],
+  environment: environmentLoader[];
+  files: fileLoader[];
 }
 
 export interface configBuilder<Ret = any> {
@@ -16,8 +16,6 @@ export interface configBuilder<Ret = any> {
 }
 
 export function loadLoaders(loaders: configLoader): configKeys {
-  const keys: configKeys = [
-    getKeysFromEnvironment(loaders.environment),
-  ].flat();
+  const keys: configKeys = [getKeysFromEnvironment(loaders.environment)].flat();
   return keys;
 }

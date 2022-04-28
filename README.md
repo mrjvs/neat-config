@@ -7,13 +7,16 @@ But specialized for cloud deployment this time
 
 # features
 
-- strictly typed configurations
+- strictly typed OR loosly typed configurations
+- complex object configuration
 - load (partial) configuration from many inputs:
   - from files: `.json`, `.env`
   - from environment variables
   - from directory structure (used for i.e docker secrets)
-- 100% test coverage
-- 0 dependecies
+  - from CLI arguments
+- validate types multiple ways:
+  - with decorators on classes (typescript only)
+  - with json schema
 
 # install
 
