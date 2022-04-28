@@ -1,3 +1,4 @@
+import { env } from 'process';
 import { configLoader } from "builder/base";
 import { configKeys } from "loaders/base";
 
@@ -14,7 +15,7 @@ export function populateLoaderFromEnvironment(loader: configLoader, prefix: stri
 export function getKeysFromEnvironment(loaders: environmentLoader[]): configKeys {
   const prefixes: string[] = loaders.map(v=>v.prefix);
   const keys: configKeys = [];
-  Object.entries(process.env).forEach(v => {
+  Object.entries(env).forEach(v => {
     if (!v[1]) return;
     for (let prefix of prefixes) {
       if (v[0].startsWith(prefix))
