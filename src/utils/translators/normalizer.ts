@@ -24,9 +24,13 @@ export function normalizeKey(key: string): string {
     .join('__');
 }
 
-export function normalizeKeys(keys: configKeys): configKeys {
+export function normalizeConfigKeys(keys: configKeys): configKeys {
   return keys.map((v) => ({
     key: normalizeKey(v.key),
     value: v.value,
   }));
+}
+
+export function normalizeKeys(keys: string[]): string[] {
+  return keys.map((v) => normalizeKey(v));
 }

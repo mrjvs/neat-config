@@ -1,4 +1,4 @@
-import { normalizeKey, normalizeKeys } from '../../../utils/translators/normalizer';
+import { normalizeConfigKeys, normalizeKey, normalizeKeys } from '../../../utils/translators/normalizer';
 
 describe('normalizeKeys()', () => {
   test('normalize single key', () => {
@@ -14,7 +14,7 @@ describe('normalizeKeys()', () => {
 
   test('normalize multiple keys', () => {
     expect(
-      normalizeKeys([
+      normalizeConfigKeys([
         {
           key: 'helloworld',
           value: '42',
@@ -34,5 +34,6 @@ describe('normalizeKeys()', () => {
         value: '21',
       },
     ]);
+    expect(normalizeKeys(['helloworld', 'hi'])).toStrictEqual(['HELLOWORLD', 'HI']);
   });
 });
