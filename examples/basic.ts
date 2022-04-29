@@ -1,4 +1,4 @@
-import { createConfigLoader } from 'cool-config';
+import { createConfigLoader } from '../lib';
 
 // prettier-ignore
 const config = createConfigLoader()

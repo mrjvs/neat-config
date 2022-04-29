@@ -2,6 +2,7 @@ import { configBuilder, configLoader, loadLoaders } from 'builder/base';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import { buildObjectFromKeys } from 'utils/build';
+import { normalizeKeys } from 'utils/translators/normalizer';
 import { configSchema, configSchemaType, validateObjectWithSchema, validateSchema } from './schema';
 
 export function createConfigLoader(): configBuilder<any> {
@@ -38,7 +39,8 @@ export function createConfigLoader(): configBuilder<any> {
     },
     load(): any {
       const keys = loadLoaders(loaders);
-      const output = buildObjectFromKeys(keys);
+      const normalizedKeys = normalizeKeys(keys);
+      const output = buildObjectFromKeys(normalizedKeys);
       validateObjectWithSchema(output, schema);
       return output;
     },
