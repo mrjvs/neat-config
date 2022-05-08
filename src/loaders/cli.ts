@@ -15,46 +15,49 @@ export function populateLoaderFromCLI(loader: configLoader, prefix: string) {
 export function getKeysFromCLI(loaders: CLILoader[]): configKeys {
   const prefixes: string[] = loaders.map((v) => v.prefix);
   const keys: configKeys = [];
-  const findNext = {
-    awaiting: false,
-    key: '',
-  };
+  let findNext: { key: string }[] = [];
   argv.forEach((v) => {
     // if its waiting for next argument, parse that argument
-    if (findNext.awaiting) {
-      keys.push({
-        key: findNext.key,
-        value: v,
+    if (findNext.length > 0) {
+      findNext.forEach((awaiting) => {
+        keys.push({
+          key: awaiting.key,
+          value: v,
+        });
       });
-      findNext.awaiting = false;
+      findNext = [];
       return;
     }
 
     // arguments must start with --
     if (!v.startsWith('--')) return;
 
-    // find appropiate prefix or skip
-    const prefix = prefixes.find((prefix) => v.startsWith('--' + prefix));
-    if (!prefix) return;
-    const key = v.slice(2 + prefix.length);
+    // handle each prefix
+    prefixes.forEach((prefix) => {
+      // skip if prefix doesn't apply here
+      if (!v.startsWith('--' + prefix)) return;
+      const key = v.slice(2 + prefix.length);
 
-    // "--KEY" "VALUE"
-    if (!key.includes('=')) {
-      findNext.awaiting = true;
-      findNext.key = key;
-    }
+      // "--KEY" "VALUE"
+      if (!key.includes('=')) {
+        findNext.push({
+          key,
+        });
+        return;
+      }
 
-    // --KEY=VALUE
-    const [argKey, ...rest] = key.split('=');
-    const value = rest.join('=');
-    keys.push({
-      key: argKey,
-      value: value,
+      // --KEY=VALUE
+      const [argKey, ...rest] = key.split('=');
+      const value = rest.join('=');
+      keys.push({
+        key: argKey,
+        value: value,
+      });
     });
   });
 
-  // if still awaiting, invalid arguments
-  if (findNext.awaiting) {
+  // if still awaiting, its invalid arguments
+  if (findNext.length > 0) {
     throw new Error('Invalid arguments'); // TODO better errors
   }
 

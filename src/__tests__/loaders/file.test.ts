@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { configLoader } from '../../builder/base';
 import { getKeysFromFiles, populateLoaderFromFile } from '../../loaders/file';
 import { ParserTypes } from '../../loaders/file';
 jest.mock('fs');
@@ -15,10 +16,10 @@ function checkIfArrayHas(test: any, value: any) {
 
 describe('file loader - basics', () => {
   test('extension loading - json', () => {
-    const obj = {
+    const obj: configLoader = {
       environment: [],
       files: [],
-    };
+    } as any;
     populateLoaderFromFile(obj, 'hi.json', ParserTypes.FROM_EXT);
     populateLoaderFromFile(obj, '.json', ParserTypes.FROM_EXT);
     populateLoaderFromFile(obj, '.test.json', ParserTypes.FROM_EXT);
@@ -29,10 +30,10 @@ describe('file loader - basics', () => {
     ]);
   });
   test('extension loading - env', () => {
-    const obj = {
+    const obj: configLoader = {
       environment: [],
       files: [],
-    };
+    } as any;
     populateLoaderFromFile(obj, '.env', ParserTypes.FROM_EXT);
     populateLoaderFromFile(obj, 'prod.env', ParserTypes.FROM_EXT);
     populateLoaderFromFile(obj, '.prod.env', ParserTypes.FROM_EXT);
@@ -43,10 +44,10 @@ describe('file loader - basics', () => {
     ]);
   });
   test('extension loading - exceptions', () => {
-    const obj = {
+    const obj: configLoader = {
       environment: [],
       files: [],
-    };
+    } as any;
     expect(() => populateLoaderFromFile(obj, 'hello-world', ParserTypes.FROM_EXT)).toThrowError(); // TODO proper error
   });
 });
