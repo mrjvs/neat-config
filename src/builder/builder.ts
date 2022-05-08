@@ -1,6 +1,7 @@
 import { configBuilder, configLoader, loadLoaders } from 'builder/base';
 import { ObjectSchema } from 'joi';
 import { populateLoaderFromCLI } from 'loaders/cli';
+import { dirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import { buildObjectFromKeys } from 'utils/build';
@@ -19,12 +20,17 @@ export function createConfigLoader(): configBuilder<any> {
     environment: [],
     files: [],
     cli: [],
+    dir: [],
   };
   let schema: configSchema | null = null;
 
   return {
     addFromEnvironment(prefix: string = ''): configBuilder<any> {
       populateLoaderFromEnvironment(loaders, prefix);
+      return this;
+    },
+    addFromDirectory(path: string, options: dirOptions = {}) {
+      populateLoaderFromDir(loaders, { path, ...options });
       return this;
     },
     addFromCLI(prefix: string = ''): configBuilder<any> {
