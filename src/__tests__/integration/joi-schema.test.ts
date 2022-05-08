@@ -59,8 +59,6 @@ describe('integration tests - joi schema', () => {
     });
   });
 
-  // TODO casting & defaults
-
   test('translations', () => {
     const schema = Joi.object({
       hi: Joi.string(),
@@ -81,6 +79,22 @@ describe('integration tests - joi schema', () => {
       Hello: 'a',
       HelloWorld: 'a',
       HI_AGAIN: 'a',
+    });
+  });
+
+  test('transformations & defaults', () => {
+    const schema = Joi.object({
+      hi: Joi.string().lowercase(),
+      hoi: Joi.string().default('yike'),
+    });
+    process.env = {
+      CONF_HI: 'AAAA',
+    };
+    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema(schema).load();
+
+    expect(config).toStrictEqual({
+      hi: 'aaaa',
+      hoi: 'yike',
     });
   });
 });

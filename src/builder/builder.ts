@@ -50,15 +50,15 @@ export function createConfigLoader(): configBuilder<any> {
       return this;
     },
     load(): any {
-      // keys -> normalized keys -> translated keys -> output object
+      // keys -> normalized keys -> translated keys -> schema transform + validate -> output object
       const keys = loadLoaders(loaders);
       const normalizedKeys = normalizeConfigKeys(keys);
 
       const translatorMap = getTranslateMapFromSchema(schema);
       const translatedKeys = useTranslatorMap(translatorMap, normalizedKeys);
 
-      const output = buildObjectFromKeys(translatedKeys);
-      validateObjectWithSchema(output, schema);
+      let output = buildObjectFromKeys(translatedKeys);
+      output = validateObjectWithSchema(output, schema);
 
       return output;
     },

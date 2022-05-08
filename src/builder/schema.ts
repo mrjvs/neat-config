@@ -22,12 +22,16 @@ export function validateSchema(schemaData: configSchema | null): void {
   }
 }
 
-export function validateObjectWithSchema(obj: Record<string, any>, schemaData: configSchema | null): void {
-  if (!schemaData) return; // ignore if no schema
+export function validateObjectWithSchema(
+  obj: Record<string, any>,
+  schemaData: configSchema | null,
+): Record<string, any> {
+  if (!schemaData) return obj; // ignore if no schema
   if (schemaData.type == configSchemaType.JOI) {
-    validateObjectWithJOISchema(obj, schemaData);
-    return;
+    return validateObjectWithJOISchema(obj, schemaData);
   }
+  // theorically unreachable
+  throw new Error('Schema type not recognized');
 }
 
 export function getTranslateMapFromSchema(schemaData: configSchema | null): translatorMap {
