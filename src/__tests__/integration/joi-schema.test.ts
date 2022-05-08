@@ -9,7 +9,7 @@ describe('integration tests - joi schema', () => {
     const schema = Joi.object({
       HI: Joi.string(),
     });
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema<any, any>(schema).load();
+    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema<any>(schema).load();
     expect(config).toStrictEqual({
       HI: 'test2',
     });
@@ -22,7 +22,7 @@ describe('integration tests - joi schema', () => {
     const schema = Joi.object({
       HI: Joi.number(),
     });
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema<any, any>(schema);
+    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema<any>(schema);
     expect(() => config.load()).toThrowError(); // TODO better errors;
   });
 
@@ -35,5 +35,52 @@ describe('integration tests - joi schema', () => {
     trySchema(null);
     trySchema(undefined);
     trySchema(Joi.string().email());
+  });
+
+  test('complex object usage', () => {
+    const schema = Joi.object({
+      HI: Joi.string(),
+      L1: Joi.object({
+        L2: Joi.object({
+          L3: Joi.string(),
+        }),
+      }),
+    });
+
+    process.env = {
+      CONF_HI: 'abc',
+      CONF_L1__L2__L3: 'def',
+    };
+    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema(schema).load();
+
+    expect(config).toStrictEqual({
+      HI: 'abc',
+      L1: { L2: { L3: 'def' } },
+    });
+  });
+
+  // TODO casting & defaults
+
+  test('translations', () => {
+    const schema = Joi.object({
+      hi: Joi.string(),
+      Hello: Joi.string(),
+      HelloWorld: Joi.string(),
+      HI_AGAIN: Joi.string(),
+    });
+    process.env = {
+      CONF_HI: 'a',
+      CONF_HELLO: 'a',
+      CONF_HELLO_WORLD: 'a',
+      'CONF_hi-again': 'a',
+    };
+    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema(schema).load();
+
+    expect(config).toStrictEqual({
+      hi: 'a',
+      Hello: 'a',
+      HelloWorld: 'a',
+      HI_AGAIN: 'a',
+    });
   });
 });
