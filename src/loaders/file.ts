@@ -3,6 +3,7 @@ import { basename } from 'path';
 import { configLoader } from 'builder/base';
 import { configKeys } from 'loaders/base';
 import { loadKeysFromJsonFileData } from './files/json';
+import { loadKeysFromEnvFileData } from './files/env';
 
 export const ParserTypes = {
   JSON: 'JSON',
@@ -17,9 +18,7 @@ const parserMap: Record<string, ParserTypesType> = {
 
 export const fileParsers: Record<ParserTypesType, (data: string) => configKeys> = {
   JSON: loadKeysFromJsonFileData,
-  ENV: () => {
-    throw new Error('Parser not implemented yet');
-  }, // TODO implement
+  ENV: loadKeysFromEnvFileData,
   FROM_EXT: () => {
     throw new Error('Cannot use FROM_EXT as a parsing type');
   }, // TODO proper error

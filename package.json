@@ -39,7 +39,6 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "@types/validator": "^13.7.2",
-    "class-validator": "^0.13.2"
+    "joi": "^17.6.0"
   }
 }

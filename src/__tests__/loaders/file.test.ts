@@ -42,7 +42,7 @@ describe('file loader - basics', () => {
       { type: ParserTypes.ENV, path: '.prod.env' },
     ]);
   });
-  test('extension loading - expections', () => {
+  test('extension loading - exceptions', () => {
     const obj = {
       environment: [],
       files: [],
@@ -84,5 +84,48 @@ describe('file loader - json', () => {
       { key: 'l1__l2__l3', value: 'def' },
       { key: 'l1__l2v2', value: 'ghi' },
     ]);
+  });
+});
+
+describe('file loader - env', () => {
+  function mockEnvFile(str: string) {
+    (fs.readFileSync as any).mockReturnValueOnce(str);
+  }
+
+  test('simple key loading', () => {
+    mockEnvFile(`TEST=abc`);
+    checkIfArrayHas(getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }]), [{ key: 'TEST', value: 'abc' }]);
+  });
+
+  test('newlines', () => {
+    mockEnvFile(`TEST=abc\r\n\r\nTEST2=2\nTEST3=3`);
+    checkIfArrayHas(getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }]), [
+      { key: 'TEST', value: 'abc' },
+      { key: 'TEST2', value: '2' },
+      { key: 'TEST3', value: '3' },
+    ]);
+  });
+
+  test('comments & whitespace', () => {
+    mockEnvFile(
+      `# test comments
+      TEST=abc
+      TEST2=2 # more comments
+      
+      TEST3=3#another comment
+    `,
+    );
+    checkIfArrayHas(getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }]), [
+      { key: 'TEST', value: 'abc' },
+      { key: 'TEST2', value: '2' },
+      { key: 'TEST3', value: '3' },
+    ]);
+  });
+
+  test('errors', () => {
+    mockEnvFile(`This is just normal text`);
+    expect(() => getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }])).toThrowError(); // TODO better errors
+    mockEnvFile(`# testing\nNORMAL=KEY\nBROKEN_KEY`);
+    expect(() => getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }])).toThrowError(); // TODO better errors
   });
 });

@@ -1,4 +1,5 @@
 import { configBuilder, configLoader, loadLoaders } from 'builder/base';
+import { ObjectSchema } from 'joi';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import { buildObjectFromKeys } from 'utils/build';
@@ -28,18 +29,10 @@ export function createConfigLoader(): configBuilder<any> {
       populateLoaderFromFile(loaders, path, type);
       return this;
     },
-    addJsonSchema<JsonSchema>(jsonSchema: Record<string, any>): configBuilder<JsonSchema> {
+    addJOISchema<Result>(joiSchema: ObjectSchema<Result>): configBuilder<Result> {
       schema = {
-        type: configSchemaType.JSON,
-        schema: jsonSchema,
-      };
-      validateSchema(schema);
-      return this;
-    },
-    addClassSchema<ClassSchema>(classSchema: new () => ClassSchema): configBuilder<ClassSchema> {
-      schema = {
-        type: configSchemaType.CLASS,
-        schema: classSchema,
+        type: configSchemaType.JOI,
+        schema: joiSchema,
       };
       validateSchema(schema);
       return this;

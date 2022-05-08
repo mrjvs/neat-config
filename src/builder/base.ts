@@ -1,3 +1,4 @@
+import { ObjectSchema } from 'joi';
 import { configKeys } from 'loaders/base';
 import { environmentLoader, getKeysFromEnvironment } from 'loaders/environment';
 import { fileLoader, ParserTypesType } from 'loaders/file';
@@ -10,8 +11,7 @@ export interface configLoader {
 export interface configBuilder<Ret = any> {
   addFromEnvironment(prefix?: string): configBuilder<Ret>;
   addFromFile(path: string, type?: ParserTypesType): configBuilder<Ret>;
-  addJsonSchema<JsonSchema>(schema: Record<string, any>): configBuilder<JsonSchema>;
-  addClassSchema<ClassSchema>(schema: new () => ClassSchema): configBuilder<ClassSchema>;
+  addJOISchema<Result>(joiSchema: ObjectSchema<Result>): configBuilder<Result>;
   load(): Ret;
 }
 
