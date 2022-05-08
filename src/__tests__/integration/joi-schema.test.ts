@@ -84,3 +84,5 @@ describe('integration tests - joi schema', () => {
     });
   });
 });
+
+// TODO add case transforms to builder
