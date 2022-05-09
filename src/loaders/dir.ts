@@ -44,23 +44,25 @@ export function getKeysFromDir(loaders: dirLoader[]): configKeys {
   // gather list of files to read, respecting prefixes
   const filesToRead: { path: string; key: string }[] = [];
   directoriesToScan.forEach((dir) => {
+    const prefixes = dir.loaders.map((v) => v.prefix);
+    let dirEntries;
     try {
-      const prefixes = dir.loaders.map((v) => v.prefix);
-      const dirEntries = readdirSync(dir.path, { withFileTypes: true });
-      const files = dirEntries.filter((v) => v.isFile());
-      prefixes.forEach((prefix) => {
-        files.forEach((file) => {
-          if (!file.name.startsWith(prefix)) return;
-          const fileNameWithoutPrefix = file.name.slice(prefix.length);
-          filesToRead.push({
-            key: fileNameWithoutPrefix,
-            path: path.resolve(dir.path, file.name),
-          });
+      dirEntries = readdirSync(dir.path, { withFileTypes: true });
+    } catch {
+      // do nothing, if directory doesnt exist, it just gets ignored
+      return;
+    }
+    const files = dirEntries.filter((v) => v.isFile());
+    prefixes.forEach((prefix) => {
+      files.forEach((file) => {
+        if (!file.name.startsWith(prefix)) return;
+        const fileNameWithoutPrefix = file.name.slice(prefix.length);
+        filesToRead.push({
+          key: fileNameWithoutPrefix,
+          path: path.resolve(dir.path, file.name),
         });
       });
-    } catch {
-      // do nothing, if directory doesnt exist, it just ignores it
-    }
+    });
   });
 
   // read files and store them in keys
