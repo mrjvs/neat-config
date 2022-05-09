@@ -4,9 +4,15 @@ import { populateLoaderFromCLI } from 'loaders/cli';
 import { dirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
-import { expandFragments, extractFragmentDefinitionFromKeys } from 'loaders/fragment';
+import {
+  expandFragments,
+  extractFragmentDefinitionFromKeys,
+  fragment,
+  populateFragmentLoaderFromFragment,
+  populateFragmentLoaderWithKey,
+} from 'loaders/fragment';
 import { buildObjectFromKeys } from 'utils/build';
-import { namingConventionFunc } from 'utils/translators/conventions';
+import { camelCaseNaming, namingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
 import { normalizeConfigKeys } from 'utils/translators/normalizer';
 import {
@@ -28,7 +34,7 @@ export function createConfigLoader(): configBuilder<any> {
       key: '',
     },
   };
-  let namingConvention: namingConventionFunc | null = null;
+  let namingConvention: namingConventionFunc = camelCaseNaming;
   let schema: configSchema | null = null;
 
   return {
@@ -58,6 +64,20 @@ export function createConfigLoader(): configBuilder<any> {
     },
     setNamingConvention(convention: namingConventionFunc) {
       namingConvention = convention;
+      return this;
+    },
+    addConfigFragment(name: string, fragment: fragment) {
+      populateFragmentLoaderFromFragment(loaders, name, fragment);
+      return this;
+    },
+    addConfigFragments(fragments: Record<string, Record<string, any>>) {
+      Object.entries(fragments).forEach(([name, fragment]) =>
+        populateFragmentLoaderFromFragment(loaders, name, fragment),
+      );
+      return this;
+    },
+    setFragmentKey(key: string) {
+      populateFragmentLoaderWithKey(loaders, key);
       return this;
     },
     load(): any {

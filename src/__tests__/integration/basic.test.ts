@@ -8,8 +8,8 @@ describe('integration tests - basic', () => {
     };
     const config = createConfigLoader().addFromEnvironment().load();
     expect(config).toStrictEqual({
-      L1: { L2: { L3: 'test' } },
-      HI: 'test2',
+      l1: { l2: { l3: 'test' } },
+      hi: 'test2',
     });
   });
 

@@ -16,11 +16,21 @@ export interface configLoader {
 }
 
 export interface configBuilder<Ret = any> {
+  // loaders
   addFromEnvironment(prefix?: string): configBuilder<Ret>;
   addFromCLI(prefix?: string): configBuilder<Ret>;
   addFromDirectory(path: string, options?: dirOptions): configBuilder<Ret>;
   addFromFile(path: string, type?: ParserTypesType): configBuilder<Ret>;
+
+  // schemas
   addJOISchema<Result>(joiSchema: ObjectSchema<Result>): configBuilder<Result>;
+
+  // fragments
+  addConfigFragment(name: string, fragment: Record<string, any>): configBuilder<Ret>;
+  addConfigFragments(fragments: Record<string, Record<string, any>>): configBuilder<Ret>;
+  setFragmentKey(key: string): configBuilder<Ret>;
+
+  // other
   setNamingConvention(convention: namingConventionFunc): configBuilder<Ret>;
   load(): Ret;
 }

@@ -126,4 +126,15 @@ describe('fragment loader', () => {
       },
     ]);
   });
+
+  test('error handling', () => {
+    const loader: fragmentLoader = {
+      fragments: {
+        FRAG_TEST2: { hi: 'hi2' },
+        FRAG_TEST: { hi: 'hi', yoink: 'yoink' },
+      },
+      key: 'USE_FRAGMENTS',
+    };
+    expect(() => expandFragments(loader, ['I_DONT_EXIST'])).toThrowError(); // TODO Better errors
+  });
 });
