@@ -2,14 +2,14 @@ import { normalizeConfigKeys, normalizeKey, normalizeKeys } from '../../../utils
 
 describe('normalizeKeys()', () => {
   test('normalize single key', () => {
-    expect(normalizeKey('HelloWorld')).toBe('HELLO-WORLD');
-    expect(normalizeKey('Hello-World')).toBe('HELLO-WORLD');
-    expect(normalizeKey('hello-world')).toBe('HELLO-WORLD');
-    expect(normalizeKey('helloWorld')).toBe('HELLO-WORLD');
-    expect(normalizeKey('hello_world')).toBe('HELLO-WORLD');
-    expect(normalizeKey('hello_WORLD')).toBe('HELLO-WORLD');
-    expect(normalizeKey('hello_--_-WORLD')).toBe('HELLO-WORLD');
-    expect(normalizeKey('hello_--_-WORLD')).toBe('HELLO-WORLD');
+    expect(normalizeKey('HelloWorld')).toBe('HELLO_WORLD');
+    expect(normalizeKey('Hello-World')).toBe('HELLO_WORLD');
+    expect(normalizeKey('hello-world')).toBe('HELLO_WORLD');
+    expect(normalizeKey('helloWorld')).toBe('HELLO_WORLD');
+    expect(normalizeKey('hello_world')).toBe('HELLO_WORLD');
+    expect(normalizeKey('hello_WORLD')).toBe('HELLO_WORLD');
+    expect(normalizeKey('hello_--_-WORLD')).toBe('HELLO_WORLD');
+    expect(normalizeKey('hello_--_-WORLD')).toBe('HELLO_WORLD');
   });
 
   test('normalize multiple keys', () => {
