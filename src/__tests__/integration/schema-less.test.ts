@@ -1,5 +1,5 @@
 import { createConfigLoader } from '../..';
-import { camelCaseNaming } from '../../utils/translators/conventions';
+import { camelCaseNaming, pascalCaseNaming } from '../../utils/translators/conventions';
 
 describe('integration tests - basic', () => {
   test('load standard config', () => {
@@ -11,6 +11,11 @@ describe('integration tests - basic', () => {
     expect(config).toStrictEqual({
       helloWorld: { hiAgain: { l3: 'test' } },
       hi: 'test2',
+    });
+    const config2 = createConfigLoader().addFromEnvironment().setNamingConvention(pascalCaseNaming).load();
+    expect(config2).toStrictEqual({
+      HelloWorld: { HiAgain: { L3: 'test' } },
+      Hi: 'test2',
     });
   });
 });
