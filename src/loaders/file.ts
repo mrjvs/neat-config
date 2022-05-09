@@ -58,9 +58,13 @@ export function populateLoaderFromFile(
 export function getKeysFromFiles(loaders: fileLoader[]): configKeys {
   const keys: configKeys = [];
   loaders.forEach((v) => {
-    const data = readFileSync(v.path, { encoding: 'utf8' });
-    const parser = fileParsers[v.type];
-    keys.push(...parser(data));
+    try {
+      const data = readFileSync(v.path, { encoding: 'utf8' });
+      const parser = fileParsers[v.type];
+      keys.push(...parser(data));
+    } catch {
+      // do nothing, if file doesnt exist, it just ignores it
+    }
   });
   return keys;
 }
