@@ -1,5 +1,11 @@
 // methods
 export { createConfigLoader } from 'builder/builder';
+export {
+  camelCaseNaming,
+  pascalCaseNaming,
+  screamingSnakeCaseNaming,
+  snakeCaseNaming,
+} from 'utils/translators/conventions';
 
 // types
 export { configBuilder } from 'builder/base';

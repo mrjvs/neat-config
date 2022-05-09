@@ -5,6 +5,20 @@ But specialized for cloud deployment this time
 
 > **WORK IN PROGRESS**
 
+## Docs todo list:
+
+- good examples
+- why to use this library over the others?
+- How keys are created (how to use environment variables)
+- How specific input sources work
+- Security (dont use for untrusted input)
+- Bugs (make an issue)
+- Contributing (use tests, make PR's, make issue first for planning)
+- explain every function on the builder
+- Naming conventions (defaults to camelCase, uses schema if supplied, overwritable)
+- fragments and how to use them
+- load details (loaded in order, overwrites each other, only objects and strings, naming conventions dont matter)
+
 # features
 
 - strictly typed OR loosly typed configurations
@@ -14,9 +28,7 @@ But specialized for cloud deployment this time
   - from environment variables
   - from directory structure (used for i.e docker secrets)
   - from CLI arguments
-- validate types multiple ways:
-  - with decorators on classes (typescript only)
-  - with json schema
+- schema validation and transformation using JOI
 
 # install
 
@@ -26,21 +38,25 @@ npm install cool-config
 
 # basic usage
 
-```js
-const { dynamicConfigLoader, schemaConfigLoader, parserTypes } = require('cool-config');
+##### Loosly typed / no schema
 
-/* --- without schema --- */
-const configWithoutSchema = dynamicConfigLoader()
+```js
+const { createConfigLoader, parserTypes } = require('cool-config');
+
+const config = createConfigLoader()
   .addFromEnvironment()
   .addFromFile('.env')
   .addFromFile('config.json')
-  .addFromFile('config.test', parserTypes.JSON) // set parser manually if it cant detect from extension
-  .addFromDirectories('~/.config/my-app') // load from files in directory, filename is the key. content is the value
+  .addFromFile('config.test', parserTypes.JSON) // manually set it to use json parser
   .load();
 
-// configWithoutSchema is a normal object now with all values
-console.log(configWithoutSchema.example.test);
+// config object now has all the values from the input sources
+console.log(config);
+```
 
+#### Strictly typed / with schema
+
+```js
 /* --- with schema --- */
 const schema = {
   example: {
