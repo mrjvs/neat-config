@@ -1,9 +1,10 @@
 import { ObjectSchema } from 'joi';
 import { configKeys } from 'loaders/base';
-import { CLILoader } from 'loaders/cli';
-import { dirLoader, dirOptions } from 'loaders/dir';
+import { CLILoader, getKeysFromCLI } from 'loaders/cli';
+import { dirLoader, dirOptions, getKeysFromDir } from 'loaders/dir';
 import { environmentLoader, getKeysFromEnvironment } from 'loaders/environment';
-import { fileLoader, ParserTypesType } from 'loaders/file';
+import { fileLoader, getKeysFromFiles, ParserTypesType } from 'loaders/file';
+import { fragmentLoader } from 'loaders/fragment';
 import { namingConventionFunc } from 'utils/translators/conventions';
 
 export interface configLoader {
@@ -11,6 +12,7 @@ export interface configLoader {
   cli: CLILoader[];
   files: fileLoader[];
   dir: dirLoader[];
+  fragments: fragmentLoader;
 }
 
 export interface configBuilder<Ret = any> {
@@ -24,6 +26,11 @@ export interface configBuilder<Ret = any> {
 }
 
 export function loadLoaders(loaders: configLoader): configKeys {
-  const keys: configKeys = [getKeysFromEnvironment(loaders.environment)].flat();
+  const keys: configKeys = [
+    getKeysFromEnvironment(loaders.environment),
+    getKeysFromCLI(loaders.cli),
+    getKeysFromFiles(loaders.files),
+    getKeysFromDir(loaders.dir),
+  ].flat();
   return keys;
 }

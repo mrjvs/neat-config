@@ -14,6 +14,11 @@ function recurseThroughObject(obj: Record<string, any>, path: string[] = []): co
   return keys;
 }
 
+export function loadKeysFromObject(obj: any) {
+  if (obj.constructor !== Object) throw new Error('Not an object'); // TODO proper error
+  return recurseThroughObject(obj);
+}
+
 export function loadKeysFromJsonFileData(data: string): configKeys {
   let obj: Record<string, any>;
   try {
@@ -21,6 +26,5 @@ export function loadKeysFromJsonFileData(data: string): configKeys {
   } catch {
     throw new Error('Cannot parse'); // TODO proper error
   }
-  if (obj.constructor !== Object) throw new Error('Not an object'); // TODO proper error
-  return recurseThroughObject(obj);
+  return loadKeysFromObject(obj);
 }

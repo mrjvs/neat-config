@@ -4,6 +4,7 @@ import { populateLoaderFromCLI } from 'loaders/cli';
 import { dirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
+import { expandFragments, extractFragmentDefinitionFromKeys } from 'loaders/fragment';
 import { buildObjectFromKeys } from 'utils/build';
 import { namingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
@@ -22,6 +23,10 @@ export function createConfigLoader(): configBuilder<any> {
     files: [],
     cli: [],
     dir: [],
+    fragments: {
+      fragments: {},
+      key: '',
+    },
   };
   let namingConvention: namingConventionFunc | null = null;
   let schema: configSchema | null = null;
@@ -56,16 +61,22 @@ export function createConfigLoader(): configBuilder<any> {
       return this;
     },
     load(): any {
-      // keys -> normalized keys -> translated keys -> schema transform + validate -> output object
+      // load and normalize keys
       const keys = loadLoaders(loaders);
-      const normalizedKeys = normalizeConfigKeys(keys);
+      let normalizedKeys = normalizeConfigKeys(keys);
 
+      // load fragments (and normalize their output)
+      const fragmentOutput = extractFragmentDefinitionFromKeys(loaders.fragments, normalizedKeys);
+      const fragmentKeys = expandFragments(loaders.fragments, fragmentOutput.fragments);
+      normalizedKeys = normalizeConfigKeys(fragmentKeys).concat(fragmentOutput.keys);
+
+      // translations
       const translatorMap = getTranslateMapFromSchema(schema);
       const translatedKeys = useTranslatorMap(translatorMap, normalizedKeys, namingConvention);
 
+      // build output object and validation
       let output = buildObjectFromKeys(translatedKeys);
       output = validateObjectWithSchema(output, schema);
-
       return output;
     },
   };
