@@ -4,5 +4,10 @@
   },
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "moduleDirectories": ["node_modules", "src"],
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+  "globals": {
+    "ts-jest": {
+      "isolatedModules": true
+    }
+  }
 }
