@@ -5,6 +5,7 @@ import { dirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import { buildObjectFromKeys } from 'utils/build';
+import { namingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
 import { normalizeConfigKeys } from 'utils/translators/normalizer';
 import {
@@ -22,10 +23,11 @@ export function createConfigLoader(): configBuilder<any> {
     cli: [],
     dir: [],
   };
+  let namingConvention: namingConventionFunc | null = null;
   let schema: configSchema | null = null;
 
   return {
-    addFromEnvironment(prefix: string = ''): configBuilder<any> {
+    addFromEnvironment(prefix: string = '') {
       populateLoaderFromEnvironment(loaders, prefix);
       return this;
     },
@@ -33,7 +35,7 @@ export function createConfigLoader(): configBuilder<any> {
       populateLoaderFromDir(loaders, { path, ...options });
       return this;
     },
-    addFromCLI(prefix: string = ''): configBuilder<any> {
+    addFromCLI(prefix: string = '') {
       populateLoaderFromCLI(loaders, prefix);
       return this;
     },
@@ -49,13 +51,17 @@ export function createConfigLoader(): configBuilder<any> {
       validateSchema(schema);
       return this;
     },
+    setNamingConvention(convention: namingConventionFunc) {
+      namingConvention = convention;
+      return this;
+    },
     load(): any {
       // keys -> normalized keys -> translated keys -> schema transform + validate -> output object
       const keys = loadLoaders(loaders);
       const normalizedKeys = normalizeConfigKeys(keys);
 
       const translatorMap = getTranslateMapFromSchema(schema);
-      const translatedKeys = useTranslatorMap(translatorMap, normalizedKeys);
+      const translatedKeys = useTranslatorMap(translatorMap, normalizedKeys, namingConvention);
 
       let output = buildObjectFromKeys(translatedKeys);
       output = validateObjectWithSchema(output, schema);

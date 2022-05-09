@@ -4,6 +4,7 @@ import { CLILoader } from 'loaders/cli';
 import { dirLoader, dirOptions } from 'loaders/dir';
 import { environmentLoader, getKeysFromEnvironment } from 'loaders/environment';
 import { fileLoader, ParserTypesType } from 'loaders/file';
+import { namingConventionFunc } from 'utils/translators/conventions';
 
 export interface configLoader {
   environment: environmentLoader[];
@@ -18,6 +19,7 @@ export interface configBuilder<Ret = any> {
   addFromDirectory(path: string, options?: dirOptions): configBuilder<Ret>;
   addFromFile(path: string, type?: ParserTypesType): configBuilder<Ret>;
   addJOISchema<Result>(joiSchema: ObjectSchema<Result>): configBuilder<Result>;
+  setNamingConvention(convention: namingConventionFunc): configBuilder<Ret>;
   load(): Ret;
 }
 

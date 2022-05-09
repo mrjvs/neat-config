@@ -12,6 +12,7 @@ describe('integration tests - basic', () => {
       HI: 'test2',
     });
   });
+
   test('load empty config', () => {
     const config = createConfigLoader().load();
     expect(config).toStrictEqual({});
