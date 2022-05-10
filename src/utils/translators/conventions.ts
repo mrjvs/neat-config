@@ -1,4 +1,4 @@
-export type namingConventionFunc = (segment: string) => string;
+export type NamingConventionFunc = (segment: string) => string;
 
 /**
  * transform normalized string to PascalCase

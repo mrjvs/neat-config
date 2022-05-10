@@ -1,6 +1,6 @@
-import { configKeys } from 'loaders/base';
+import { ConfigKeys } from 'loaders/base';
 
-export function buildObjectFromKeys(keys: configKeys): Record<string, any> {
+export function buildObjectFromKeys(keys: ConfigKeys): Record<string, any> {
   const output: Record<string, any> = {};
   keys.forEach((v) => {
     let current = output;

@@ -1,4 +1,4 @@
-import { configKeys } from 'loaders/base';
+import { ConfigKeys } from 'loaders/base';
 
 /**
  * normalize key segment:
@@ -24,7 +24,7 @@ export function normalizeKey(key: string): string {
     .join('__');
 }
 
-export function normalizeConfigKeys(keys: configKeys): configKeys {
+export function normalizeConfigKeys(keys: ConfigKeys): ConfigKeys {
   return keys.map((v) => ({
     key: normalizeKey(v.key),
     value: v.value,

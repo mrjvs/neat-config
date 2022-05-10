@@ -1,1 +1,1 @@
-export type configKeys = { key: string; value: string }[];
+export type ConfigKeys = { key: string; value: string }[];

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { configLoader } from '../../builder/base';
+import { ConfigLoader } from '../../builder/base';
 import { getKeysFromFiles, populateLoaderFromFile } from '../../loaders/file';
 import { ParserTypes } from '../../loaders/file';
 jest.mock('fs');
@@ -16,7 +16,7 @@ function checkIfArrayHas(test: any, value: any) {
 
 describe('file loader - basics', () => {
   test('extension loading - json', () => {
-    const obj: configLoader = {
+    const obj: ConfigLoader = {
       environment: [],
       files: [],
     } as any;
@@ -30,7 +30,7 @@ describe('file loader - basics', () => {
     ]);
   });
   test('extension loading - env', () => {
-    const obj: configLoader = {
+    const obj: ConfigLoader = {
       environment: [],
       files: [],
     } as any;
@@ -44,7 +44,7 @@ describe('file loader - basics', () => {
     ]);
   });
   test('extension loading - exceptions', () => {
-    const obj: configLoader = {
+    const obj: ConfigLoader = {
       environment: [],
       files: [],
     } as any;

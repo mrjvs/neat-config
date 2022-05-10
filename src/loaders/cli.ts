@@ -1,20 +1,20 @@
 import { argv } from 'process';
-import { configLoader } from 'builder/base';
-import { configKeys } from 'loaders/base';
+import { ConfigLoader } from 'builder/base';
+import { ConfigKeys } from 'loaders/base';
 
 export interface CLILoader {
   prefix: string;
 }
 
-export function populateLoaderFromCLI(loader: configLoader, prefix: string) {
+export function populateLoaderFromCLI(loader: ConfigLoader, prefix: string) {
   loader.cli.push({
     prefix,
   });
 }
 
-export function getKeysFromCLI(loaders: CLILoader[]): configKeys {
+export function getKeysFromCLI(loaders: CLILoader[]): ConfigKeys {
   const prefixes: string[] = loaders.map((v) => v.prefix);
-  const keys: configKeys = [];
+  const keys: ConfigKeys = [];
   let findNext: { key: string }[] = [];
   argv.forEach((v) => {
     // if its waiting for next argument, parse that argument
@@ -51,7 +51,7 @@ export function getKeysFromCLI(loaders: CLILoader[]): configKeys {
       const value = rest.join('=');
       keys.push({
         key: argKey,
-        value: value,
+        value,
       });
     });
   });

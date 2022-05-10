@@ -1,22 +1,22 @@
-import { configLoader } from 'builder/base';
+import { ConfigLoader } from 'builder/base';
 import { readdirSync, readFileSync } from 'fs';
 import * as path from 'path';
-import { configKeys } from 'loaders/base';
+import { ConfigKeys } from 'loaders/base';
 
-export interface dirOptions {
+export interface DirOptions {
   prefix?: string;
 }
 
-export interface fullDirOptions extends dirOptions {
+export interface FullDirOptions extends DirOptions {
   path: string;
 }
 
-export interface dirLoader {
+export interface DirLoader {
   prefix: string;
   path: string;
 }
 
-export function populateLoaderFromDir(loader: configLoader, ops: fullDirOptions) {
+export function populateLoaderFromDir(loader: ConfigLoader, ops: FullDirOptions) {
   const optionWithDefaults = {
     prefix: '',
     ...ops,
@@ -24,11 +24,11 @@ export function populateLoaderFromDir(loader: configLoader, ops: fullDirOptions)
   loader.dir.push(optionWithDefaults);
 }
 
-export function getKeysFromDir(loaders: dirLoader[]): configKeys {
-  const keys: configKeys = [];
+export function getKeysFromDir(loaders: DirLoader[]): ConfigKeys {
+  const keys: ConfigKeys = [];
 
   // gather list of directories to scan
-  const directoriesToScan = loaders.reduce<{ path: string; loaders: dirLoader[] }[]>((acc, loader) => {
+  const directoriesToScan = loaders.reduce<{ path: string; loaders: DirLoader[] }[]>((acc, loader) => {
     const existing = acc.find((v) => v.path === loader.path);
     if (!existing) {
       acc.push({

@@ -1,19 +1,19 @@
 import { Description, isSchema, Schema } from 'joi';
-import { configSchemaType } from 'builder/schema';
+import { ConfigSchemaType } from 'builder/schema';
 
-export interface configJOISchema {
-  type: configSchemaType;
+export interface ConfigJOISchema {
+  type: ConfigSchemaType.JOI;
   schema: Schema;
 }
 
-export function validateJOISchemaDefintion(schemaData: configJOISchema) {
+export function validateJOISchemaDefintion(schemaData: ConfigJOISchema) {
   if (!isSchema(schemaData.schema)) throw new Error('Schema not a valid JOI schema'); // TODO better errors
   if (schemaData.schema.describe().type !== 'object') throw new Error('Base of schema not an object'); // TODO better errors
 }
 
 export function validateObjectWithJOISchema(
   obj: Record<string, any>,
-  schemaData: configJOISchema,
+  schemaData: ConfigJOISchema,
 ): Record<string, any> {
   const { error, value } = schemaData.schema.validate(obj);
   if (error) throw error; // TODO better errors
@@ -33,6 +33,6 @@ function recursiveSearchForKeys(desc: Description, path: string[] = []): string[
   return out;
 }
 
-export function getKeysFromJOISchema(schemaData: configJOISchema): string[] {
+export function getKeysFromJOISchema(schemaData: ConfigJOISchema): string[] {
   return recursiveSearchForKeys(schemaData.schema.describe());
 }

@@ -1,42 +1,42 @@
 import { ObjectSchema } from 'joi';
-import { configKeys } from 'loaders/base';
+import { ConfigKeys } from 'loaders/base';
 import { CLILoader, getKeysFromCLI } from 'loaders/cli';
-import { dirLoader, dirOptions, getKeysFromDir } from 'loaders/dir';
-import { environmentLoader, getKeysFromEnvironment } from 'loaders/environment';
-import { fileLoader, getKeysFromFiles, ParserTypesType } from 'loaders/file';
-import { fragmentLoader } from 'loaders/fragment';
-import { namingConventionFunc } from 'utils/translators/conventions';
+import { DirLoader, DirOptions, getKeysFromDir } from 'loaders/dir';
+import { EnvironmentLoader, getKeysFromEnvironment } from 'loaders/environment';
+import { FileLoader, getKeysFromFiles, ParserTypesType } from 'loaders/file';
+import { FragmentLoader } from 'loaders/fragment';
+import { NamingConventionFunc } from 'utils/translators/conventions';
 
-export interface configLoader {
-  environment: environmentLoader[];
+export interface ConfigLoader {
+  environment: EnvironmentLoader[];
   cli: CLILoader[];
-  files: fileLoader[];
-  dir: dirLoader[];
-  fragments: fragmentLoader;
+  files: FileLoader[];
+  dir: DirLoader[];
+  fragments: FragmentLoader;
 }
 
-export interface configBuilder<Ret = any> {
+export interface ConfigBuilder<Ret = any> {
   // loaders
-  addFromEnvironment(prefix?: string): configBuilder<Ret>;
-  addFromCLI(prefix?: string): configBuilder<Ret>;
-  addFromDirectory(path: string, options?: dirOptions): configBuilder<Ret>;
-  addFromFile(path: string, type?: ParserTypesType): configBuilder<Ret>;
+  addFromEnvironment(prefix?: string): ConfigBuilder<Ret>;
+  addFromCLI(prefix?: string): ConfigBuilder<Ret>;
+  addFromDirectory(path: string, options?: DirOptions): ConfigBuilder<Ret>;
+  addFromFile(path: string, type?: ParserTypesType): ConfigBuilder<Ret>;
 
   // schemas
-  addJOISchema<Result>(joiSchema: ObjectSchema<Result>): configBuilder<Result>;
+  addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result>;
 
   // fragments
-  addConfigFragment(name: string, fragment: Record<string, any>): configBuilder<Ret>;
-  addConfigFragments(fragments: Record<string, Record<string, any>>): configBuilder<Ret>;
-  setFragmentKey(key: string): configBuilder<Ret>;
+  addConfigFragment(name: string, fragment: Record<string, any>): ConfigBuilder<Ret>;
+  addConfigFragments(fragments: Record<string, Record<string, any>>): ConfigBuilder<Ret>;
+  setFragmentKey(key: string): ConfigBuilder<Ret>;
 
   // other
-  setNamingConvention(convention: namingConventionFunc): configBuilder<Ret>;
+  setNamingConvention(convention: NamingConventionFunc): ConfigBuilder<Ret>;
   load(): Ret;
 }
 
-export function loadLoaders(loaders: configLoader): configKeys {
-  const keys: configKeys = [
+export function loadLoaders(loaders: ConfigLoader): ConfigKeys {
+  const keys: ConfigKeys = [
     getKeysFromEnvironment(loaders.environment),
     getKeysFromCLI(loaders.cli),
     getKeysFromFiles(loaders.files),

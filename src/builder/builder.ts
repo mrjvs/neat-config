@@ -1,30 +1,30 @@
-import { configBuilder, configLoader, loadLoaders } from 'builder/base';
+import { ConfigBuilder, ConfigLoader, loadLoaders } from 'builder/base';
 import { ObjectSchema } from 'joi';
 import { populateLoaderFromCLI } from 'loaders/cli';
-import { dirOptions, populateLoaderFromDir } from 'loaders/dir';
+import { DirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
 import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import {
   expandFragments,
   extractFragmentDefinitionFromKeys,
-  fragment,
+  Fragment,
   populateFragmentLoaderFromFragment,
   populateFragmentLoaderWithKey,
 } from 'loaders/fragment';
 import { buildObjectFromKeys } from 'utils/build';
-import { camelCaseNaming, namingConventionFunc } from 'utils/translators/conventions';
+import { camelCaseNaming, NamingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
 import { normalizeConfigKeys } from 'utils/translators/normalizer';
 import {
-  configSchema,
-  configSchemaType,
+  ConfigSchema,
+  ConfigSchemaType,
   getTranslateMapFromSchema,
   validateObjectWithSchema,
   validateSchema,
 } from './schema';
 
-export function createConfigLoader(): configBuilder<any> {
-  const loaders: configLoader = {
+export function createConfigLoader(): ConfigBuilder<any> {
+  const loaders: ConfigLoader = {
     environment: [],
     files: [],
     cli: [],
@@ -34,15 +34,15 @@ export function createConfigLoader(): configBuilder<any> {
       key: '',
     },
   };
-  let namingConvention: namingConventionFunc = camelCaseNaming;
-  let schema: configSchema | null = null;
+  let namingConvention: NamingConventionFunc = camelCaseNaming;
+  let schema: ConfigSchema | null = null;
 
   return {
     addFromEnvironment(prefix: string = '') {
       populateLoaderFromEnvironment(loaders, prefix);
       return this;
     },
-    addFromDirectory(path: string, options: dirOptions = {}) {
+    addFromDirectory(path: string, options: DirOptions = {}) {
       populateLoaderFromDir(loaders, { path, ...options });
       return this;
     },
@@ -50,30 +50,28 @@ export function createConfigLoader(): configBuilder<any> {
       populateLoaderFromCLI(loaders, prefix);
       return this;
     },
-    addFromFile(path: string, type: ParserTypesType = ParserTypes.FROM_EXT): configBuilder<any> {
+    addFromFile(path: string, type: ParserTypesType = ParserTypes.FROM_EXT): ConfigBuilder<any> {
       populateLoaderFromFile(loaders, path, type);
       return this;
     },
-    addJOISchema<Result>(joiSchema: ObjectSchema<Result>): configBuilder<Result> {
+    addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result> {
       schema = {
-        type: configSchemaType.JOI,
+        type: ConfigSchemaType.JOI,
         schema: joiSchema,
       };
       validateSchema(schema);
       return this;
     },
-    setNamingConvention(convention: namingConventionFunc) {
+    setNamingConvention(convention: NamingConventionFunc) {
       namingConvention = convention;
       return this;
     },
-    addConfigFragment(name: string, fragment: fragment) {
-      populateFragmentLoaderFromFragment(loaders, name, fragment);
+    addConfigFragment(name: string, frag: Fragment) {
+      populateFragmentLoaderFromFragment(loaders, name, frag);
       return this;
     },
-    addConfigFragments(fragments: Record<string, Record<string, any>>) {
-      Object.entries(fragments).forEach(([name, fragment]) =>
-        populateFragmentLoaderFromFragment(loaders, name, fragment),
-      );
+    addConfigFragments(fragments: Record<string, Fragment>) {
+      Object.entries(fragments).forEach(([name, frag]) => populateFragmentLoaderFromFragment(loaders, name, frag));
       return this;
     },
     setFragmentKey(key: string) {

@@ -1,3 +1,3 @@
-export interface translatorMap {
+export interface TranslatorMap {
   [k: string]: string;
 }

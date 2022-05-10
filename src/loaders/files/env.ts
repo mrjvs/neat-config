@@ -1,6 +1,6 @@
-import { configKeys } from 'loaders/base';
+import { ConfigKeys } from 'loaders/base';
 
-export function loadKeysFromEnvFileData(data: string): configKeys {
+export function loadKeysFromEnvFileData(data: string): ConfigKeys {
   // 1. get lines
   // 2. remove comments and trim whitespace
   // 3. remove empty lines
@@ -12,7 +12,7 @@ export function loadKeysFromEnvFileData(data: string): configKeys {
     .filter((v) => v.length)
     .map((v) => {
       const [key, ...rest] = v.split('=');
-      if (rest.length == 0) throw new Error('Cannot parse'); // TODO proper error
+      if (rest.length === 0) throw new Error('Cannot parse'); // TODO proper error
       const value = rest.join('=');
       return [key, value];
     })

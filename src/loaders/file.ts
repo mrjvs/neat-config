@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { basename } from 'path';
-import { configLoader } from 'builder/base';
-import { configKeys } from 'loaders/base';
+import { ConfigLoader } from 'builder/base';
+import { ConfigKeys } from 'loaders/base';
 import { loadKeysFromJsonFileData } from './files/json';
 import { loadKeysFromEnvFileData } from './files/env';
 
@@ -16,7 +16,7 @@ const parserMap: Record<string, ParserTypesType> = {
   env: 'ENV',
 } as const;
 
-export const fileParsers: Record<ParserTypesType, (data: string) => configKeys> = {
+export const fileParsers: Record<ParserTypesType, (data: string) => ConfigKeys> = {
   JSON: loadKeysFromJsonFileData,
   ENV: loadKeysFromEnvFileData,
   FROM_EXT: () => {
@@ -24,7 +24,7 @@ export const fileParsers: Record<ParserTypesType, (data: string) => configKeys> 
   }, // TODO proper error
 };
 
-export interface fileLoader {
+export interface FileLoader {
   path: string;
   type: ParserTypesType;
 }
@@ -34,12 +34,12 @@ function getExtension(path: string): string {
   if (!filename) return '';
   const extensionIndex = filename.lastIndexOf('.');
   if (extensionIndex === -1) return '';
-  let extension = filename.slice(extensionIndex + 1);
+  const extension = filename.slice(extensionIndex + 1);
   return extension.toLowerCase();
 }
 
 export function populateLoaderFromFile(
-  loader: configLoader,
+  loader: ConfigLoader,
   path: string,
   type: ParserTypesType = ParserTypes.FROM_EXT,
 ) {
@@ -55,8 +55,8 @@ export function populateLoaderFromFile(
   });
 }
 
-export function getKeysFromFiles(loaders: fileLoader[]): configKeys {
-  const keys: configKeys = [];
+export function getKeysFromFiles(loaders: FileLoader[]): ConfigKeys {
+  const keys: ConfigKeys = [];
   loaders.forEach((v) => {
     let data;
     try {

@@ -1,35 +1,35 @@
-import { configLoader } from 'builder/base';
+import { ConfigLoader } from 'builder/base';
 import { normalizeKey } from 'utils/translators/normalizer';
-import { configKeys } from './base';
+import { ConfigKeys } from './base';
 import { loadKeysFromObject } from './files/json';
 
-export type fragment = Record<string, any>;
+export type Fragment = Record<string, any>;
 
 // this loader is special, it gets loaded after loading all other loaders and normalizing.
 // but the results get placed BEFORE all the loaded keys
-export interface fragmentLoader {
-  fragments: Record<string, fragment>; // name of fragment need to be normalized
+export interface FragmentLoader {
+  fragments: Record<string, Fragment>; // name of fragment need to be normalized
   key: string; // needs to be normalized
 }
 
 // saves the normalized name with the fragment in the loader
-export function populateFragmentLoaderFromFragment(loader: configLoader, name: string, fragment: fragment) {
+export function populateFragmentLoaderFromFragment(loader: ConfigLoader, name: string, frag: Fragment) {
   const normalizedName = normalizeKey(name);
   if (loader.fragments.fragments[normalizedName]) {
     throw new Error('Fragment with the same name already registered'); // TODO better errors
   }
-  loader.fragments.fragments[normalizedName] = fragment;
+  loader.fragments.fragments[normalizedName] = frag;
 }
 
-export function populateFragmentLoaderWithKey(loader: configLoader, key: string) {
+export function populateFragmentLoaderWithKey(loader: ConfigLoader, key: string) {
   loader.fragments.key = normalizeKey(key);
 }
 
 // extracts fragments to use, and normalizes the input
 export function extractFragmentDefinitionFromKeys(
-  loader: fragmentLoader,
-  keys: configKeys,
-): { fragments: string[]; keys: configKeys } {
+  loader: FragmentLoader,
+  keys: ConfigKeys,
+): { fragments: string[]; keys: ConfigKeys } {
   let fragmentUses: string = '';
   const filteredKeys = keys.filter((key) => {
     if (key.key === loader.key) {
@@ -47,8 +47,8 @@ export function extractFragmentDefinitionFromKeys(
   };
 }
 
-export function expandFragments(loader: fragmentLoader, fragments: string[]): configKeys {
-  const outputKeys: configKeys = [];
+export function expandFragments(loader: FragmentLoader, fragments: string[]): ConfigKeys {
+  const outputKeys: ConfigKeys = [];
   fragments.forEach((name) => {
     if (!loader.fragments[name]) {
       throw new Error(`Fragment '${name}' doesn't exist`); // TODO better errors

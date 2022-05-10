@@ -1,7 +1,7 @@
-import { configKeys } from 'loaders/base';
+import { ConfigKeys } from 'loaders/base';
 
-function recurseThroughObject(obj: Record<string, any>, path: string[] = []): configKeys {
-  const keys: configKeys = [];
+function recurseThroughObject(obj: Record<string, any>, path: string[] = []): ConfigKeys {
+  const keys: ConfigKeys = [];
   Object.keys(obj).forEach((key) => {
     const value = obj[key];
     if (value.constructor === Object) {
@@ -19,7 +19,7 @@ export function loadKeysFromObject(obj: any) {
   return recurseThroughObject(obj);
 }
 
-export function loadKeysFromJsonFileData(data: string): configKeys {
+export function loadKeysFromJsonFileData(data: string): ConfigKeys {
   let obj: Record<string, any>;
   try {
     obj = JSON.parse(data);

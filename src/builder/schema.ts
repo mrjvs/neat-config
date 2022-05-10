@@ -1,22 +1,22 @@
 import {
-  configJOISchema,
+  ConfigJOISchema,
   getKeysFromJOISchema,
   validateJOISchemaDefintion,
   validateObjectWithJOISchema,
 } from 'schemas/joi';
 import { keysToTranslatorMap } from 'utils/translators/map';
 import { normalizeKeys } from 'utils/translators/normalizer';
-import { translatorMap } from 'utils/translators/types';
+import { TranslatorMap } from 'utils/translators/types';
 
-export enum configSchemaType {
+export enum ConfigSchemaType {
   JOI,
 }
 
-export type configSchema = configJOISchema;
+export type ConfigSchema = ConfigJOISchema;
 
-export function validateSchema(schemaData: configSchema | null): void {
+export function validateSchema(schemaData: ConfigSchema | null): void {
   if (!schemaData) return; // ignore if no schema
-  if (schemaData.type == configSchemaType.JOI) {
+  if (schemaData.type === ConfigSchemaType.JOI) {
     validateJOISchemaDefintion(schemaData);
     return;
   }
@@ -24,19 +24,19 @@ export function validateSchema(schemaData: configSchema | null): void {
 
 export function validateObjectWithSchema(
   obj: Record<string, any>,
-  schemaData: configSchema | null,
+  schemaData: ConfigSchema | null,
 ): Record<string, any> {
   if (!schemaData) return obj; // ignore if no schema
-  if (schemaData.type == configSchemaType.JOI) {
+  if (schemaData.type === ConfigSchemaType.JOI) {
     return validateObjectWithJOISchema(obj, schemaData);
   }
   // theorically unreachable
   throw new Error('Schema type not recognized');
 }
 
-export function getTranslateMapFromSchema(schemaData: configSchema | null): translatorMap {
+export function getTranslateMapFromSchema(schemaData: ConfigSchema | null): TranslatorMap {
   if (!schemaData) return {};
-  if (schemaData.type == configSchemaType.JOI) {
+  if (schemaData.type === ConfigSchemaType.JOI) {
     const keys = getKeysFromJOISchema(schemaData);
     const normalized = normalizeKeys(keys);
     return keysToTranslatorMap(normalized, keys);
