@@ -1,5 +1,5 @@
 {
-  "name": "cool-config",
+  "name": "neat-config",
   "version": "1.0.0",
   "description": "Yet another config library, specialized for cloud deployment",
   "main": "lib/index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mrjvs/cool-config.git"
+    "url": "git+https://github.com/mrjvs/neat-config.git"
   },
   "keywords": [
     "config"
@@ -22,9 +22,9 @@
   "author": "mrjvs",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mrjvs/cool-config/issues"
+    "url": "https://github.com/mrjvs/neat-config/issues"
   },
-  "homepage": "https://github.com/mrjvs/cool-config#readme",
+  "homepage": "https://github.com/mrjvs/neat-config#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
