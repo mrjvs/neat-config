@@ -6,6 +6,7 @@ import { EnvironmentLoader, getKeysFromEnvironment } from 'loaders/environment';
 import { FileLoader, getKeysFromFiles, ParserTypesType } from 'loaders/file';
 import { FragmentLoader } from 'loaders/fragment';
 import { NamingConventionFunc } from 'utils/translators/conventions';
+import { AnyZodObject, z } from 'zod';
 
 export interface ConfigLoader {
   environment: EnvironmentLoader[];
@@ -24,6 +25,7 @@ export interface ConfigBuilder<Ret = any> {
 
   // schemas
   addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result>;
+  addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<z.infer<T>>;
 
   // fragments
   addConfigFragment(name: string, fragment: Record<string, any>): ConfigBuilder<Ret>;
