@@ -16,7 +16,6 @@ export function validateObjectWithZodSchema(
   obj: Record<string, any>,
   schemaData: ConfigZodSchema,
 ): Record<string, any> {
-  console.log(obj);
   const result = schemaData.schema.safeParse(obj);
   if (!result.success) throw result.error; // TODO better errors
   return result.data;
