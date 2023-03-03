@@ -9,7 +9,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -18,17 +18,18 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18
-    - name: Switch directory
-      run: cd .docs
-    
+
     - name: Install packages
+      working-directory: ./.docs
       run: npm install
     
     - name: Build project
+      working-directory: ./.docs
       run: npm run generate
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v3
+      working-directory: ./.docs
       with:
         name: github-pages
         path: ./dist
