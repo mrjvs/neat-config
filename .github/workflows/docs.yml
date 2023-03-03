@@ -28,20 +28,16 @@ jobs:
       run: npm run generate
 
     - name: Upload production-ready build files
-      uses: actions/upload-artifact@v3
-      with:
-        name: github-pages
+      uses: actions/upload-pages-artifact@v1
+      with: 
         path: ./.docs/.output/public
 
   deploy:
     name: Deploy
     needs: build
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
-      url: https://github.io/mrjvs/neat-config
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
