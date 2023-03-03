@@ -1,0 +1,49 @@
+name: "Documentation deployment"
+
+on:
+  push:
+    branches:
+      - latest
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Switch directory
+      run: cd .docs
+    
+    - name: Install packages
+      run: npm install
+    
+    - name: Build project
+      run: npm run generate
+
+    - name: Upload production-ready build files
+      uses: actions/upload-artifact@v3
+      with:
+        name: github-pages
+        path: ./dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: https://github.io/mrjvs/neat-config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
