@@ -25,7 +25,7 @@ jobs:
     
     - name: Build project
       working-directory: ./.docs
-      run: npm run generate
+      run: NUXT_APP_BASE_URL=/neat-config npm run generate
 
     - name: Upload production-ready build files
       uses: actions/upload-pages-artifact@v1
