@@ -1,7 +1,7 @@
 {
   "name": "neat-config",
-  "version": "1.0.0",
-  "description": "Yet another config library, specialized for cloud deployment",
+  "version": "1.1.0",
+  "description": "Cloud-native type-safe configuration",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
