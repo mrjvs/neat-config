@@ -15,6 +15,7 @@ import { buildObjectFromKeys } from 'utils/build';
 import { camelCaseNaming, NamingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
 import { normalizeConfigKeys } from 'utils/translators/normalizer';
+import { AnyZodObject, z } from 'zod';
 import {
   ConfigSchema,
   ConfigSchemaType,
@@ -58,6 +59,14 @@ export function createConfigLoader(): ConfigBuilder<any> {
       schema = {
         type: ConfigSchemaType.JOI,
         schema: joiSchema,
+      };
+      validateSchema(schema);
+      return this;
+    },
+    addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<z.infer<T>> {
+      schema = {
+        type: ConfigSchemaType.ZOD,
+        schema: zodSchema,
       };
       validateSchema(schema);
       return this;
