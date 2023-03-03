@@ -29,10 +29,9 @@ jobs:
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v3
-      working-directory: ./.docs
       with:
         name: github-pages
-        path: ./dist
+        path: ./.docs/dist
 
   deploy:
     name: Deploy
