@@ -1,6 +1,6 @@
 type DeepReadonlyCond<T> = T extends (infer R)[]
   ? DeepReadonlyArray<R>
-  : T extends Function
+  : T extends (...a: any[]) => any
   ? T
   : T extends object
   ? DeepReadonly<T>

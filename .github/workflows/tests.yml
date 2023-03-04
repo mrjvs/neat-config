@@ -1,6 +1,7 @@
 name: Testing
 
 on:
+  pull_request:
   push:
     branches:
       - latest
@@ -25,3 +26,6 @@ jobs:
     
     - name: Run tests
       run: npm run test
+          
+    - name: Run linting
+      run: npm run lint
