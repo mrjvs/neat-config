@@ -3,7 +3,7 @@ import { ObjectSchema } from 'joi';
 import { populateLoaderFromCLI } from 'loaders/cli';
 import { DirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
-import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
+import { FileOptions, ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import {
   expandFragments,
   extractFragmentDefinitionFromKeys,
@@ -12,6 +12,7 @@ import {
   populateFragmentLoaderWithKey,
 } from 'loaders/fragment';
 import { buildObjectFromKeys } from 'utils/build';
+import { deepFreeze } from 'utils/freeze';
 import { camelCaseNaming, NamingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
 import { normalizeConfigKeys } from 'utils/translators/normalizer';
@@ -34,6 +35,7 @@ export function createConfigLoader(): ConfigBuilder<any> {
       fragments: {},
       key: '',
     },
+    freeze: false,
   };
   let namingConvention: NamingConventionFunc = camelCaseNaming;
   let schema: ConfigSchema | null = null;
@@ -51,8 +53,8 @@ export function createConfigLoader(): ConfigBuilder<any> {
       populateLoaderFromCLI(loaders, prefix);
       return this;
     },
-    addFromFile(path: string, type: ParserTypesType = ParserTypes.FROM_EXT): ConfigBuilder<any> {
-      populateLoaderFromFile(loaders, path, type);
+    addFromFile(path: string, ops?: FileOptions): ConfigBuilder<any> {
+      populateLoaderFromFile(loaders, path, ops ?? {});
       return this;
     },
     addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result> {
@@ -87,6 +89,10 @@ export function createConfigLoader(): ConfigBuilder<any> {
       populateFragmentLoaderWithKey(loaders, key);
       return this;
     },
+    freeze() {
+      loaders.freeze = true;
+      return this;
+    },
     load(): any {
       // load and normalize keys
       const keys = loadLoaders(loaders);
@@ -104,6 +110,10 @@ export function createConfigLoader(): ConfigBuilder<any> {
       // build output object and validation
       let output = buildObjectFromKeys(translatedKeys);
       output = validateObjectWithSchema(output, schema);
+
+      // freezing
+      if (loaders.freeze) output = deepFreeze(output);
+
       return output;
     },
   };
