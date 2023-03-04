@@ -5,15 +5,13 @@ export default defineAppConfig({
     socials: {
       github: 'mrjvs/neat-config',
     },
+    image: '',
     aside: {
       level: 0,
       exclude: [],
     },
     header: {
       logo: false,
-    },
-    footer: {
-      iconLinks: [],
     },
   },
 });
