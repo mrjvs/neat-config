@@ -20,13 +20,13 @@ describe('file loader - basics', () => {
       environment: [],
       files: [],
     } as any;
-    populateLoaderFromFile(obj, 'hi.json', ParserTypes.FROM_EXT);
-    populateLoaderFromFile(obj, '.json', ParserTypes.FROM_EXT);
-    populateLoaderFromFile(obj, '.test.json', ParserTypes.FROM_EXT);
+    populateLoaderFromFile(obj, 'hi.json', { type: ParserTypes.FROM_EXT });
+    populateLoaderFromFile(obj, '.json', { type: ParserTypes.FROM_EXT });
+    populateLoaderFromFile(obj, '.test.json', { type: ParserTypes.FROM_EXT });
     expect(obj.files).toStrictEqual([
-      { type: ParserTypes.JSON, path: 'hi.json' },
-      { type: ParserTypes.JSON, path: '.json' },
-      { type: ParserTypes.JSON, path: '.test.json' },
+      { type: ParserTypes.JSON, path: 'hi.json', prefix: undefined },
+      { type: ParserTypes.JSON, path: '.json', prefix: undefined },
+      { type: ParserTypes.JSON, path: '.test.json', prefix: undefined },
     ]);
   });
   test('extension loading - env', () => {
@@ -34,13 +34,13 @@ describe('file loader - basics', () => {
       environment: [],
       files: [],
     } as any;
-    populateLoaderFromFile(obj, '.env', ParserTypes.FROM_EXT);
-    populateLoaderFromFile(obj, 'prod.env', ParserTypes.FROM_EXT);
-    populateLoaderFromFile(obj, '.prod.env', ParserTypes.FROM_EXT);
+    populateLoaderFromFile(obj, '.env', { type: ParserTypes.FROM_EXT });
+    populateLoaderFromFile(obj, 'prod.env', { type: ParserTypes.FROM_EXT });
+    populateLoaderFromFile(obj, '.prod.env', { type: ParserTypes.FROM_EXT });
     expect(obj.files).toStrictEqual([
-      { type: ParserTypes.ENV, path: '.env' },
-      { type: ParserTypes.ENV, path: 'prod.env' },
-      { type: ParserTypes.ENV, path: '.prod.env' },
+      { type: ParserTypes.ENV, path: '.env', prefix: undefined },
+      { type: ParserTypes.ENV, path: 'prod.env', prefix: undefined },
+      { type: ParserTypes.ENV, path: '.prod.env', prefix: undefined },
     ]);
   });
   test('extension loading - exceptions', () => {
@@ -48,7 +48,7 @@ describe('file loader - basics', () => {
       environment: [],
       files: [],
     } as any;
-    expect(() => populateLoaderFromFile(obj, 'hello-world', ParserTypes.FROM_EXT)).toThrowError(); // TODO proper error
+    expect(() => populateLoaderFromFile(obj, 'hello-world', { type: ParserTypes.FROM_EXT })).toThrowError(); // TODO proper error
   });
 });
 
@@ -68,6 +68,15 @@ describe('file loader - json', () => {
       { key: 'test2', value: 'true' },
       { key: 'test3', value: '42' },
     ]);
+  });
+
+  test('prefixes', () => {
+    mockJsonFile({
+      test1: 'abc',
+      test2: true,
+      test3: 42,
+    });
+    expect(() => getKeysFromFiles([{ path: 'hi', type: ParserTypes.JSON, prefix: 'TEST' }])).toThrowError();
   });
 
   test('deep key loading', () => {
@@ -96,6 +105,16 @@ describe('file loader - env', () => {
   test('simple key loading', () => {
     mockEnvFile(`TEST=abc`);
     checkIfArrayHas(getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }]), [{ key: 'TEST', value: 'abc' }]);
+  });
+
+  test('prefixes', () => {
+    mockEnvFile(`
+      TEST=abc
+      A_TEST=def
+    `);
+    checkIfArrayHas(getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV, prefix: 'A_' }]), [
+      { key: 'TEST', value: 'def' },
+    ]);
   });
 
   test('newlines', () => {

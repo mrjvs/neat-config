@@ -3,7 +3,7 @@ import { ObjectSchema } from 'joi';
 import { populateLoaderFromCLI } from 'loaders/cli';
 import { DirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
-import { ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
+import { FileOptions, ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
 import {
   expandFragments,
   extractFragmentDefinitionFromKeys,
@@ -51,8 +51,8 @@ export function createConfigLoader(): ConfigBuilder<any> {
       populateLoaderFromCLI(loaders, prefix);
       return this;
     },
-    addFromFile(path: string, type: ParserTypesType = ParserTypes.FROM_EXT): ConfigBuilder<any> {
-      populateLoaderFromFile(loaders, path, type);
+    addFromFile(path: string, ops?: FileOptions): ConfigBuilder<any> {
+      populateLoaderFromFile(loaders, path, ops ?? {});
       return this;
     },
     addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result> {

@@ -1,12 +1,13 @@
 import { ConfigKeys } from 'loaders/base';
 
-export function loadKeysFromEnvFileData(data: string): ConfigKeys {
+export function loadKeysFromEnvFileData(data: string, prefix?: string): ConfigKeys {
   // 1. get lines
   // 2. remove comments and trim whitespace
   // 3. remove empty lines
   // 4. retrieve key & value, error if no "=" found
   // 5. map to configKeys type
-  return data
+
+  let output = data
     .split(/\r?\n/g)
     .map((v) => v.split('#')[0].trim())
     .filter((v) => v.length)
@@ -20,4 +21,16 @@ export function loadKeysFromEnvFileData(data: string): ConfigKeys {
       key: v[0],
       value: v[1],
     }));
+
+  // 6. filter out keys not starting with prefix
+  // 7. strip prefixes
+  if (prefix)
+    output = output
+      .filter((v) => v.key.startsWith(prefix))
+      .map((v) => {
+        v.key = v.key.slice(prefix.length);
+        return v;
+      });
+
+  return output;
 }
