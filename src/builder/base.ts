@@ -5,6 +5,7 @@ import { DirLoader, DirOptions, getKeysFromDir } from 'loaders/dir';
 import { EnvironmentLoader, getKeysFromEnvironment } from 'loaders/environment';
 import { FileLoader, FileOptions, getKeysFromFiles, ParserTypesType } from 'loaders/file';
 import { FragmentLoader } from 'loaders/fragment';
+import { DeepReadonly } from 'utils/freeze';
 import { NamingConventionFunc } from 'utils/translators/conventions';
 import { AnyZodObject, z } from 'zod';
 
@@ -14,6 +15,7 @@ export interface ConfigLoader {
   files: FileLoader[];
   dir: DirLoader[];
   fragments: FragmentLoader;
+  freeze: boolean;
 }
 
 export interface ConfigBuilder<Ret = any> {
@@ -34,6 +36,7 @@ export interface ConfigBuilder<Ret = any> {
 
   // other
   setNamingConvention(convention: NamingConventionFunc): ConfigBuilder<Ret>;
+  freeze(): ConfigBuilder<DeepReadonly<Ret>>;
   load(): Ret;
 }
 

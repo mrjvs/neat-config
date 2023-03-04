@@ -12,6 +12,7 @@ import {
   populateFragmentLoaderWithKey,
 } from 'loaders/fragment';
 import { buildObjectFromKeys } from 'utils/build';
+import { deepFreeze } from 'utils/freeze';
 import { camelCaseNaming, NamingConventionFunc } from 'utils/translators/conventions';
 import { useTranslatorMap } from 'utils/translators/map';
 import { normalizeConfigKeys } from 'utils/translators/normalizer';
@@ -34,6 +35,7 @@ export function createConfigLoader(): ConfigBuilder<any> {
       fragments: {},
       key: '',
     },
+    freeze: false,
   };
   let namingConvention: NamingConventionFunc = camelCaseNaming;
   let schema: ConfigSchema | null = null;
@@ -87,6 +89,10 @@ export function createConfigLoader(): ConfigBuilder<any> {
       populateFragmentLoaderWithKey(loaders, key);
       return this;
     },
+    freeze() {
+      loaders.freeze = true;
+      return this;
+    },
     load(): any {
       // load and normalize keys
       const keys = loadLoaders(loaders);
@@ -104,6 +110,10 @@ export function createConfigLoader(): ConfigBuilder<any> {
       // build output object and validation
       let output = buildObjectFromKeys(translatedKeys);
       output = validateObjectWithSchema(output, schema);
+
+      // freezing
+      if (loaders.freeze) output = deepFreeze(output);
+
       return output;
     },
   };
