@@ -3,8 +3,9 @@ import { ConfigKeys } from 'loaders/base';
 import { CLILoader, getKeysFromCLI } from 'loaders/cli';
 import { DirLoader, DirOptions, getKeysFromDir } from 'loaders/dir';
 import { EnvironmentLoader, getKeysFromEnvironment } from 'loaders/environment';
-import { FileLoader, getKeysFromFiles, ParserTypesType } from 'loaders/file';
+import { FileLoader, FileOptions, getKeysFromFiles, ParserTypesType } from 'loaders/file';
 import { FragmentLoader } from 'loaders/fragment';
+import { DeepReadonly } from 'utils/freeze';
 import { NamingConventionFunc } from 'utils/translators/conventions';
 import { AnyZodObject, z } from 'zod';
 
@@ -14,6 +15,7 @@ export interface ConfigLoader {
   files: FileLoader[];
   dir: DirLoader[];
   fragments: FragmentLoader;
+  freeze: boolean;
 }
 
 export interface ConfigBuilder<Ret = any> {
@@ -21,7 +23,7 @@ export interface ConfigBuilder<Ret = any> {
   addFromEnvironment(prefix?: string): ConfigBuilder<Ret>;
   addFromCLI(prefix?: string): ConfigBuilder<Ret>;
   addFromDirectory(path: string, options?: DirOptions): ConfigBuilder<Ret>;
-  addFromFile(path: string, type?: ParserTypesType): ConfigBuilder<Ret>;
+  addFromFile(path: string, ops?: FileOptions): ConfigBuilder<Ret>;
 
   // schemas
   addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result>;
@@ -34,6 +36,7 @@ export interface ConfigBuilder<Ret = any> {
 
   // other
   setNamingConvention(convention: NamingConventionFunc): ConfigBuilder<Ret>;
+  freeze(): ConfigBuilder<DeepReadonly<Ret>>;
   load(): Ret;
 }
 

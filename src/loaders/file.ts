@@ -11,12 +11,18 @@ export const ParserTypes = {
   FROM_EXT: 'FROM_EXT',
 } as const;
 export type ParserTypesType = keyof typeof ParserTypes;
+
+export interface FileOptions {
+  type?: ParserTypesType;
+  prefix?: string;
+}
+
 const parserMap: Record<string, ParserTypesType> = {
   json: 'JSON',
   env: 'ENV',
 } as const;
 
-export const fileParsers: Record<ParserTypesType, (data: string) => ConfigKeys> = {
+export const fileParsers: Record<ParserTypesType, (data: string, prefix?: string) => ConfigKeys> = {
   JSON: loadKeysFromJsonFileData,
   ENV: loadKeysFromEnvFileData,
   FROM_EXT: () => {
@@ -27,6 +33,7 @@ export const fileParsers: Record<ParserTypesType, (data: string) => ConfigKeys> 
 export interface FileLoader {
   path: string;
   type: ParserTypesType;
+  prefix?: string;
 }
 
 function getExtension(path: string): string {
@@ -38,11 +45,9 @@ function getExtension(path: string): string {
   return extension.toLowerCase();
 }
 
-export function populateLoaderFromFile(
-  loader: ConfigLoader,
-  path: string,
-  type: ParserTypesType = ParserTypes.FROM_EXT,
-) {
+export function populateLoaderFromFile(loader: ConfigLoader, path: string, ops: FileOptions) {
+  let type = ops.type ?? ParserTypes.FROM_EXT;
+  const prefix = ops.prefix;
   if (type === ParserTypes.FROM_EXT) {
     const extType = parserMap[getExtension(path)];
     if (!extType) throw new Error('invalid extension, cannot load file'); // TODO proper error
@@ -52,6 +57,7 @@ export function populateLoaderFromFile(
   loader.files.push({
     path,
     type,
+    prefix,
   });
 }
 
@@ -66,7 +72,7 @@ export function getKeysFromFiles(loaders: FileLoader[]): ConfigKeys {
       return;
     }
     const parser = fileParsers[v.type];
-    keys.push(...parser(data));
+    keys.push(...parser(data, v.prefix));
   });
   return keys;
 }

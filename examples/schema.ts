@@ -1,21 +1,17 @@
 import { createConfigLoader } from '../lib';
-import * as joi from 'joi';
+import { z } from 'zod';
 
 process.env.CONF_HI = 'Hello world';
 
-interface config {
-  Hi: string;
-}
-
-const schema = joi.object<config>({
-  Hi: joi.string(),
+const schema = z.object({
+  Hi: z.string(),
 });
 
 // prettier-ignore
 const config = createConfigLoader()
   .addFromEnvironment("CONF_")
   .addFromFile("./config.json")
-  .addJOISchema(schema)
+  .addZodSchema(schema)
   .load();
 
 console.log(config);

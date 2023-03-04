@@ -19,7 +19,11 @@ export function loadKeysFromObject(obj: any) {
   return recurseThroughObject(obj);
 }
 
-export function loadKeysFromJsonFileData(data: string): ConfigKeys {
+export function loadKeysFromJsonFileData(data: string, prefix?: string): ConfigKeys {
+  // no prefix allowed
+  if (prefix) throw new Error('Prefix is not allowed on json files'); // TODO proper error
+
+  // parse
   let obj: Record<string, any>;
   try {
     obj = JSON.parse(data);
