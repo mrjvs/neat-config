@@ -8,7 +8,8 @@
     "strict": true,
     "baseUrl": "src",
     "experimentalDecorators": true,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "esModuleInterop": true,
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]

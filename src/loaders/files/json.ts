@@ -1,4 +1,5 @@
 import { ConfigKeys } from 'loaders/base';
+import { FileLoadError } from 'utils/errors';
 
 function recurseThroughObject(obj: Record<string, any>, path: string[] = []): ConfigKeys {
   const keys: ConfigKeys = [];
@@ -15,20 +16,20 @@ function recurseThroughObject(obj: Record<string, any>, path: string[] = []): Co
 }
 
 export function loadKeysFromObject(obj: any) {
-  if (obj.constructor !== Object) throw new Error('Not an object'); // TODO proper error
+  if (obj.constructor !== Object) throw new FileLoadError('Extracting keys can only be done on an object');
   return recurseThroughObject(obj);
 }
 
 export function loadKeysFromJsonFileData(data: string, prefix?: string): ConfigKeys {
   // no prefix allowed
-  if (prefix) throw new Error('Prefix is not allowed on json files'); // TODO proper error
+  if (prefix) throw new Error('Prefix is not allowed on json files');
 
   // parse
   let obj: Record<string, any>;
   try {
     obj = JSON.parse(data);
   } catch {
-    throw new Error('Cannot parse'); // TODO proper error
+    throw new FileLoadError('Cannot parse JSON file');
   }
   return loadKeysFromObject(obj);
 }

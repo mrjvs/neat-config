@@ -1,9 +1,9 @@
 import { ConfigBuilder, ConfigLoader, loadLoaders } from 'builder/base';
-import { ObjectSchema } from 'joi';
+import { ObjectSchema } from 'utils/joiTypes';
 import { populateLoaderFromCLI } from 'loaders/cli';
 import { DirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
-import { FileOptions, ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
+import { FileOptions, populateLoaderFromFile } from 'loaders/file';
 import {
   expandFragments,
   extractFragmentDefinitionFromKeys,
@@ -24,8 +24,30 @@ import {
   validateObjectWithSchema,
   validateSchema,
 } from './schema';
+import { NeatConfigError } from 'utils/errors';
 
-export function createConfigLoader(): ConfigBuilder<any> {
+type AssertionType = "throw" | "pretty" | "plain";
+
+export interface ConfigLoaderOptions {
+  /**
+   * Choose the type of assertion you want (defaults to "pretty"):
+   *  - throw: throw the error
+   *  - pretty: Log the error in pretty format and colors, then exit process
+   *  - plain: Log the error in plain text, then exit process
+   */
+  assert?: AssertionType;
+}
+
+function handleError(type: AssertionType, error: unknown) {
+  if (type === "throw") throw error;
+  if (!(error instanceof NeatConfigError)) throw error;
+  if (type === "plain") error.plainPrintAndExit();
+  if (type === "pretty") error.printAndExit();
+  throw error;
+}
+
+export function createConfigLoader(loadOps?: ConfigLoaderOptions): ConfigBuilder<any> {
+  const assertionType = loadOps?.assert ?? "pretty";
   const loaders: ConfigLoader = {
     environment: [],
     files: [],
@@ -35,26 +57,42 @@ export function createConfigLoader(): ConfigBuilder<any> {
       fragments: {},
       key: '',
     },
-    freeze: false,
+    freeze: true,
   };
   let namingConvention: NamingConventionFunc = camelCaseNaming;
   let schema: ConfigSchema | null = null;
 
   return {
     addFromEnvironment(prefix: string = '') {
-      populateLoaderFromEnvironment(loaders, prefix);
+      try {
+        populateLoaderFromEnvironment(loaders, prefix);
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     addFromDirectory(path: string, options: DirOptions = {}) {
-      populateLoaderFromDir(loaders, { path, ...options });
+      try {
+        populateLoaderFromDir(loaders, { path, ...options });
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     addFromCLI(prefix: string = '') {
-      populateLoaderFromCLI(loaders, prefix);
+      try {
+        populateLoaderFromCLI(loaders, prefix);
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     addFromFile(path: string, ops?: FileOptions): ConfigBuilder<any> {
-      populateLoaderFromFile(loaders, path, ops ?? {});
+      try {
+        populateLoaderFromFile(loaders, path, ops ?? {});
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result> {
@@ -62,7 +100,11 @@ export function createConfigLoader(): ConfigBuilder<any> {
         type: ConfigSchemaType.JOI,
         schema: joiSchema,
       };
-      validateSchema(schema);
+      try {
+        validateSchema(schema);
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<z.infer<T>> {
@@ -70,7 +112,11 @@ export function createConfigLoader(): ConfigBuilder<any> {
         type: ConfigSchemaType.ZOD,
         schema: zodSchema,
       };
-      validateSchema(schema);
+      try {
+        validateSchema(schema);
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     setNamingConvention(convention: NamingConventionFunc) {
@@ -78,43 +124,59 @@ export function createConfigLoader(): ConfigBuilder<any> {
       return this;
     },
     addConfigFragment(name: string, frag: Fragment) {
-      populateFragmentLoaderFromFragment(loaders, name, frag);
+      try {
+        populateFragmentLoaderFromFragment(loaders, name, frag);
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     addConfigFragments(fragments: Record<string, Fragment>) {
-      Object.entries(fragments).forEach(([name, frag]) => populateFragmentLoaderFromFragment(loaders, name, frag));
+      try {
+        Object.entries(fragments).forEach(([name, frag]) => populateFragmentLoaderFromFragment(loaders, name, frag));
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
     setFragmentKey(key: string) {
-      populateFragmentLoaderWithKey(loaders, key);
+      try {
+        populateFragmentLoaderWithKey(loaders, key);
+      } catch (err) {
+        handleError(assertionType, err);
+      }
       return this;
     },
-    freeze() {
-      loaders.freeze = true;
+    unfreeze() {
+      loaders.freeze = false;
       return this;
     },
     load(): any {
-      // load and normalize keys
-      const keys = loadLoaders(loaders);
-      let normalizedKeys = normalizeConfigKeys(keys);
+      try {
+        // load and normalize keys
+        const keys = loadLoaders(loaders);
+        let normalizedKeys = normalizeConfigKeys(keys);
 
-      // load fragments (and normalize their output)
-      const fragmentOutput = extractFragmentDefinitionFromKeys(loaders.fragments, normalizedKeys);
-      const fragmentKeys = expandFragments(loaders.fragments, fragmentOutput.fragments);
-      normalizedKeys = normalizeConfigKeys(fragmentKeys).concat(fragmentOutput.keys);
+        // load fragments (and normalize their output)
+        const fragmentOutput = extractFragmentDefinitionFromKeys(loaders.fragments, normalizedKeys);
+        const fragmentKeys = expandFragments(loaders.fragments, fragmentOutput.fragments);
+        normalizedKeys = normalizeConfigKeys(fragmentKeys).concat(fragmentOutput.keys);
 
-      // translations
-      const translatorMap = getTranslateMapFromSchema(schema);
-      const translatedKeys = useTranslatorMap(translatorMap, normalizedKeys, namingConvention);
+        // translations
+        const translatorMap = getTranslateMapFromSchema(schema);
+        const translatedKeys = useTranslatorMap(translatorMap, normalizedKeys, namingConvention);
 
-      // build output object and validation
-      let output = buildObjectFromKeys(translatedKeys);
-      output = validateObjectWithSchema(output, schema);
+        // build output object and validation
+        let output = buildObjectFromKeys(translatedKeys);
+        output = validateObjectWithSchema(output, schema);
 
-      // freezing
-      if (loaders.freeze) output = deepFreeze(output);
+        // freezing
+        if (loaders.freeze) output = deepFreeze(output);
 
-      return output;
+        return output;
+      } catch (err) {
+        handleError(assertionType, err);
+      }
     },
   };
 }

@@ -6,7 +6,7 @@ describe('integration tests - freezing', () => {
       L1__L2__L3: 'test',
       HI: 'test2',
     };
-    const config = createConfigLoader().addFromEnvironment().load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment().unfreeze().load();
     expect(config).toStrictEqual({
       l1: { l2: { l3: 'test' } },
       hi: 'test2',
@@ -25,7 +25,7 @@ describe('integration tests - freezing', () => {
     process.env = {
       HI: 'test2',
     };
-    const config = createConfigLoader().addFromEnvironment().freeze().load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment().load();
     expect(config).toStrictEqual({
       hi: 'test2',
     });
@@ -45,7 +45,7 @@ describe('integration tests - freezing', () => {
       L1__L2__L3: 'test',
       HI: 'test2',
     };
-    const config = createConfigLoader().addFromEnvironment().freeze().load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment().load();
     expect(config).toStrictEqual({
       l1: { l2: { l3: 'test' } },
       hi: 'test2',
