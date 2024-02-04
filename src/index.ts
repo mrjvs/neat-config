@@ -1,5 +1,3 @@
-import { createConfigLoader } from 'builder/builder';
-
 // methods
 export { createConfigLoader } from 'builder/builder';
 
