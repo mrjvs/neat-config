@@ -12,6 +12,20 @@ export type DeepReadonly<T> = {
   readonly [P in keyof T]: DeepReadonlyCond<T[P]>;
 };
 
+type DeepWriteableCond<T> = T extends (infer R)[]
+  ? DeepWriteableArray<R>
+  : T extends (...a: any[]) => any
+  ? T
+  : T extends object
+  ? DeepWriteable<T>
+  : T;
+
+interface DeepWriteableArray<T> extends Array<DeepWriteableCond<T>> {}
+
+export type DeepWriteable<T> = {
+  -readonly [P in keyof T]: DeepWriteableCond<T[P]>;
+};
+
 export function deepFreeze<T>(object: T): DeepReadonly<T> {
   const obj = object as any;
   const propNames = Reflect.ownKeys(obj);

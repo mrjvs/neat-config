@@ -18,26 +18,28 @@ export interface ConfigLoader {
   freeze: boolean;
 }
 
-export interface ConfigBuilder<Ret = any> {
+type ModifyFreeze<Ret extends any, TFreeze extends true | false> = TFreeze extends true ? DeepReadonly<Ret> : Ret
+
+export interface ConfigBuilder<Ret = any, TFreeze extends true | false = true> {
   // loaders
-  addFromEnvironment(prefix?: string): ConfigBuilder<Ret>;
-  addFromCLI(prefix?: string): ConfigBuilder<Ret>;
-  addFromDirectory(path: string, options?: DirOptions): ConfigBuilder<Ret>;
-  addFromFile(path: string, ops?: FileOptions): ConfigBuilder<Ret>;
+  addFromEnvironment(prefix?: string): ConfigBuilder<Ret, TFreeze>;
+  addFromCLI(prefix?: string): ConfigBuilder<Ret, TFreeze>;
+  addFromDirectory(path: string, options?: DirOptions): ConfigBuilder<Ret, TFreeze>;
+  addFromFile(path: string, ops?: FileOptions): ConfigBuilder<Ret, TFreeze>;
 
   // schemas
-  addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result>;
-  addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<TypeOf<T>>;
+  addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result, TFreeze>;
+  addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<TypeOf<T>, TFreeze>;
 
   // fragments
-  addConfigFragment(name: string, fragment: Record<string, any>): ConfigBuilder<Ret>;
-  addConfigFragments(fragments: Record<string, Record<string, any>>): ConfigBuilder<Ret>;
-  setFragmentKey(key: string): ConfigBuilder<Ret>;
+  addConfigFragment(name: string, fragment: Record<string, any>): ConfigBuilder<Ret, TFreeze>;
+  addConfigFragments(fragments: Record<string, Record<string, any>>): ConfigBuilder<Ret, TFreeze>;
+  setFragmentKey(key: string): ConfigBuilder<Ret, TFreeze>;
 
   // other
-  setNamingConvention(convention: NamingConventionFunc): ConfigBuilder<Ret>;
-  freeze(): ConfigBuilder<DeepReadonly<Ret>>;
-  load(): Ret;
+  setNamingConvention(convention: NamingConventionFunc): ConfigBuilder<Ret, TFreeze>;
+  unfreeze(): ConfigBuilder<Ret, false>;
+  load(): ModifyFreeze<Ret, TFreeze>;
 }
 
 export function loadLoaders(loaders: ConfigLoader): ConfigKeys {

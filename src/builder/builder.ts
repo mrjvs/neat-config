@@ -57,7 +57,7 @@ export function createConfigLoader(options?: ConfigLoaderOptions): ConfigBuilder
       fragments: {},
       key: '',
     },
-    freeze: false,
+    freeze: true,
   };
   let namingConvention: NamingConventionFunc = camelCaseNaming;
   let schema: ConfigSchema | null = null;
@@ -147,8 +147,8 @@ export function createConfigLoader(options?: ConfigLoaderOptions): ConfigBuilder
       }
       return this;
     },
-    freeze() {
-      loaders.freeze = true;
+    unfreeze() {
+      loaders.freeze = false;
       return this;
     },
     load(): any {
