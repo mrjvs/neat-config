@@ -142,10 +142,15 @@ describe('file loader - env', () => {
     ]);
   });
 
-  test('errors', () => {
-    mockEnvFile(`This is just normal text`);
-    expect(() => getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }])).toThrowError(); // TODO better errors
-    mockEnvFile(`# testing\nNORMAL=KEY\nBROKEN_KEY`);
-    expect(() => getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }])).toThrowError(); // TODO better errors
+  test('quotes', () => {
+    mockEnvFile(
+      `TEST="abc"
+      TEST2='2'
+    `,
+    );
+    checkIfArrayHas(getKeysFromFiles([{ path: 'hi', type: ParserTypes.ENV }]), [
+      { key: 'TEST', value: 'abc' },
+      { key: 'TEST2', value: '2' },
+    ]);
   });
 });
