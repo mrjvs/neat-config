@@ -1,4 +1,5 @@
 import { ConfigSchemaType } from 'builder/schema';
+import { LoaderInputError, ValidationError } from 'utils/errors';
 import { Schema, Description } from 'utils/joiTypes';
 
 export interface ConfigJOISchema {
@@ -7,8 +8,8 @@ export interface ConfigJOISchema {
 }
 
 export function validateJOISchemaDefintion(schemaData: ConfigJOISchema) {
-  if (typeof schemaData.schema.describe !== "function") throw new Error('Schema not a valid JOI schema'); // TODO better errors
-  if (schemaData.schema.describe().type !== 'object') throw new Error('Base of schema not an object'); // TODO better errors
+  if (typeof schemaData.schema.describe !== "function") throw new LoaderInputError('Schema not a valid JOI schema');
+  if (schemaData.schema.describe().type !== 'object') throw new LoaderInputError('Base of schema not an object');
 }
 
 export function validateObjectWithJOISchema(
@@ -16,7 +17,13 @@ export function validateObjectWithJOISchema(
   schemaData: ConfigJOISchema,
 ): Record<string, any> {
   const { error, value } = schemaData.schema.validate(obj);
-  if (error) throw error; // TODO better errors
+  if (error) {
+    const validations = error.details.map(issue => ({
+      message: issue.message,
+      path: issue.path.join("."),
+    }))
+    throw new ValidationError(validations);
+  }
   return value;
 }
 

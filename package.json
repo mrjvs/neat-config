@@ -39,6 +39,7 @@
     "lib/**/*"
   ],
   "dependencies": {
+    "chalk": "^4.1.2",
     "dotenv": "^16.4.1",
     "joi": "^17",
     "zod": "^3"

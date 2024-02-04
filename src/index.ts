@@ -9,9 +9,19 @@ export {
   snakeCaseNaming,
 } from 'utils/translators/conventions';
 
+// errors
+export {
+  NeatConfigError,
+  ValidationError,
+  FileLoadError,
+  LoaderInputError,
+  Validation,
+} from 'utils/errors';
+
 // types
-export { ConfigBuilder } from 'builder/base';
-export { Fragment } from 'loaders/fragment';
-export { ParserTypesType, FileOptions } from 'loaders/file';
-export { DirOptions } from 'loaders/dir';
-export { NamingConventionFunc } from 'utils/translators/conventions';
+export type { ConfigBuilder } from 'builder/base';
+export type { Fragment } from 'loaders/fragment';
+export type { ParserTypesType, FileOptions } from 'loaders/file';
+export type { DirOptions } from 'loaders/dir';
+export type { NamingConventionFunc } from 'utils/translators/conventions';
+export type { ConfigLoaderOptions } from 'builder/builder';
