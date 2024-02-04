@@ -11,12 +11,12 @@ export class NeatConfigError extends Error {
   }
 
   printAndExit() {
-    console.log(this.getPretty());
+    console.error(this.getPretty());
     process.exit(1);
   }
   
   plainPrintAndExit() {
-    console.log(this.toString());
+    console.error(this.toString());
     process.exit(1);
   }
 }

@@ -18,6 +18,9 @@ export {
   Validation,
 } from 'utils/errors';
 
+// utils
+export { zodCoercedBoolean } from "utils/zodTypes";
+
 // types
 export type { ConfigBuilder } from 'builder/base';
 export type { Fragment } from 'loaders/fragment';
