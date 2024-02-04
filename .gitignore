@@ -105,3 +105,6 @@ dist
 
 # library output
 /lib
+
+# test folder
+/test

@@ -9,7 +9,7 @@ describe('integration tests - joi schema', () => {
     const schema = Joi.object({
       HI: Joi.string(),
     });
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema<any>(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addJOISchema<any>(schema).load();
     expect(config).toStrictEqual({
       HI: 'test2',
     });
@@ -22,13 +22,13 @@ describe('integration tests - joi schema', () => {
     const schema = Joi.object({
       HI: Joi.number(),
     });
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema<any>(schema);
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addJOISchema<any>(schema);
     expect(() => config.load()).toThrowError(); // TODO better errors;
   });
 
   test('invalid schema', () => {
     function trySchema(s: any) {
-      expect(() => createConfigLoader().addJOISchema(s)).toThrowError(); // TODO better errors
+      expect(() => createConfigLoader({ assert: 'throw' }).addJOISchema(s)).toThrowError(); // TODO better errors
     }
 
     trySchema({ hi: 42 });
@@ -51,7 +51,7 @@ describe('integration tests - joi schema', () => {
       CONF_HI: 'abc',
       CONF_L1__L2__L3: 'def',
     };
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addJOISchema(schema).load();
 
     expect(config).toStrictEqual({
       HI: 'abc',
@@ -72,7 +72,7 @@ describe('integration tests - joi schema', () => {
       CONF_HELLO_WORLD: 'a',
       'CONF_hi-again': 'a',
     };
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addJOISchema(schema).load();
 
     expect(config).toStrictEqual({
       hi: 'a',
@@ -90,7 +90,7 @@ describe('integration tests - joi schema', () => {
     process.env = {
       CONF_HI: 'AAAA',
     };
-    const config = createConfigLoader().addFromEnvironment('CONF_').addJOISchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addJOISchema(schema).load();
 
     expect(config).toStrictEqual({
       hi: 'aaaa',

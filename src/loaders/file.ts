@@ -4,6 +4,7 @@ import { ConfigLoader } from 'builder/base';
 import { ConfigKeys } from 'loaders/base';
 import { loadKeysFromJsonFileData } from './files/json';
 import { loadKeysFromEnvFileData } from './files/env';
+import { LoaderInputError } from 'utils/errors';
 
 export const ParserTypes = {
   JSON: 'JSON',
@@ -27,7 +28,7 @@ export const fileParsers: Record<ParserTypesType, (data: string, prefix?: string
   ENV: loadKeysFromEnvFileData,
   FROM_EXT: () => {
     throw new Error('Cannot use FROM_EXT as a parsing type');
-  }, // TODO proper error
+  },
 };
 
 export interface FileLoader {
@@ -50,10 +51,10 @@ export function populateLoaderFromFile(loader: ConfigLoader, path: string, ops: 
   const prefix = ops.prefix;
   if (type === ParserTypes.FROM_EXT) {
     const extType = parserMap[getExtension(path)];
-    if (!extType) throw new Error('invalid extension, cannot load file'); // TODO proper error
+    if (!extType) throw new LoaderInputError(`Unrecognized extension for '${path}'`);
     type = extType;
   }
-  if (!Object.values(ParserTypes).includes(type)) throw new Error('invalid parser type, cannot load file'); // TODO proper error
+  if (!Object.values(ParserTypes).includes(type)) throw new LoaderInputError(`invalid parser type '${type}'`);
   loader.files.push({
     path,
     type,

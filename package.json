@@ -1,6 +1,6 @@
 {
   "name": "neat-config",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Cloud-native type-safe configuration",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -39,7 +39,9 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "joi": "^17.6.0",
-    "zod": "^3.20.6"
+    "chalk": "^4.1.2",
+    "dotenv": "^16.4.1",
+    "joi": "^17",
+    "zod": "^3"
   }
 }

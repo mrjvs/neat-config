@@ -9,7 +9,7 @@ describe('integration tests - zod schema', () => {
     const schema = z.object({
       HI: z.string(),
     });
-    const config = createConfigLoader().addFromEnvironment('CONF_').addZodSchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addZodSchema(schema).load();
     expect(config).toStrictEqual({
       HI: 'test2',
     });
@@ -21,12 +21,12 @@ describe('integration tests - zod schema', () => {
     const schema = z.object({
       HI: z.number(),
     });
-    const config = createConfigLoader().addFromEnvironment('CONF_').addZodSchema(schema);
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addZodSchema(schema);
     expect(() => config.load()).toThrowError(); // TODO better errors;
   });
   test('invalid schema', () => {
     function trySchema(s: any) {
-      expect(() => createConfigLoader().addZodSchema(s)).toThrowError(); // TODO better errors
+      expect(() => createConfigLoader({ assert: 'throw' }).addZodSchema(s)).toThrowError(); // TODO better errors
     }
     trySchema({ hi: 42 });
     trySchema(null);
@@ -46,7 +46,7 @@ describe('integration tests - zod schema', () => {
       CONF_HI: 'abc',
       CONF_L1__L2__L3: 'def',
     };
-    const config = createConfigLoader().addFromEnvironment('CONF_').addZodSchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addZodSchema(schema).load();
     expect(config).toStrictEqual({
       HI: 'abc',
       L1: { L2: { L3: 'def' } },
@@ -65,7 +65,7 @@ describe('integration tests - zod schema', () => {
       CONF_HELLO_WORLD: 'a',
       'CONF_hi-again': 'a',
     };
-    const config = createConfigLoader().addFromEnvironment('CONF_').addZodSchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addZodSchema(schema).load();
     expect(config).toStrictEqual({
       hi: 'a',
       Hello: 'a',
@@ -81,7 +81,7 @@ describe('integration tests - zod schema', () => {
     process.env = {
       CONF_HI: 'AAAA',
     };
-    const config = createConfigLoader().addFromEnvironment('CONF_').addZodSchema(schema).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment('CONF_').addZodSchema(schema).load();
     expect(config).toStrictEqual({
       hi: 'aaaa',
       hoi: 'yike',

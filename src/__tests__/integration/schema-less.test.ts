@@ -7,12 +7,12 @@ describe('integration tests - basic', () => {
       HELLO_WORLD__HI_AGAIN__L3: 'test',
       HI: 'test2',
     };
-    const config = createConfigLoader().addFromEnvironment().setNamingConvention(camelCaseNaming).load();
+    const config = createConfigLoader({ assert: 'throw' }).addFromEnvironment().setNamingConvention(camelCaseNaming).load();
     expect(config).toStrictEqual({
       helloWorld: { hiAgain: { l3: 'test' } },
       hi: 'test2',
     });
-    const config2 = createConfigLoader().addFromEnvironment().setNamingConvention(pascalCaseNaming).load();
+    const config2 = createConfigLoader({ assert: 'throw' }).addFromEnvironment().setNamingConvention(pascalCaseNaming).load();
     expect(config2).toStrictEqual({
       HelloWorld: { HiAgain: { L3: 'test' } },
       Hi: 'test2',

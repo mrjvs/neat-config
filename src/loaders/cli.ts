@@ -1,6 +1,7 @@
 import { argv } from 'process';
 import { ConfigLoader } from 'builder/base';
 import { ConfigKeys } from 'loaders/base';
+import { LoaderInputError } from 'utils/errors';
 
 export interface CLILoader {
   prefix: string;
@@ -58,7 +59,7 @@ export function getKeysFromCLI(loaders: CLILoader[]): ConfigKeys {
 
   // if still awaiting, its invalid arguments
   if (findNext.length > 0) {
-    throw new Error('Invalid arguments'); // TODO better errors
+    throw new LoaderInputError('Expected value for configuration key but found nothing');
   }
 
   return keys;

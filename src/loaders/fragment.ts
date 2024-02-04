@@ -2,6 +2,7 @@ import { ConfigLoader } from 'builder/base';
 import { normalizeKey } from 'utils/translators/normalizer';
 import { ConfigKeys } from './base';
 import { loadKeysFromObject } from './files/json';
+import { FileLoadError, LoaderInputError } from 'utils/errors';
 
 export type Fragment = Record<string, any>;
 
@@ -16,7 +17,7 @@ export interface FragmentLoader {
 export function populateFragmentLoaderFromFragment(loader: ConfigLoader, name: string, frag: Fragment) {
   const normalizedName = normalizeKey(name);
   if (loader.fragments.fragments[normalizedName]) {
-    throw new Error('Fragment with the same name already registered'); // TODO better errors
+    throw new LoaderInputError(`Fragment with the name ${normalizedName} already registered`);
   }
   loader.fragments.fragments[normalizedName] = frag;
 }
@@ -51,7 +52,7 @@ export function expandFragments(loader: FragmentLoader, fragments: string[]): Co
   const outputKeys: ConfigKeys = [];
   fragments.forEach((name) => {
     if (!loader.fragments[name]) {
-      throw new Error(`Fragment '${name}' doesn't exist`); // TODO better errors
+      throw new FileLoadError(`Fragment '${name}' doesn't exist`);
     }
     const keys = loadKeysFromObject(loader.fragments[name]);
     outputKeys.push(...keys);

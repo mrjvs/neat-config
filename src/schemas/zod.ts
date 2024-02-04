@@ -1,4 +1,5 @@
 import { ConfigSchemaType } from 'builder/schema';
+import { LoaderInputError, ValidationError } from 'utils/errors';
 import { AnyZodObject, ZodObjectDef } from 'zod';
 
 export interface ConfigZodSchema {
@@ -8,8 +9,8 @@ export interface ConfigZodSchema {
 
 export function validateZodSchemaDefintion(schemaData: ConfigZodSchema) {
   const def = schemaData.schema._def;
-  if (!def) throw new Error('Schema not a valid Zod schema');
-  if (def.typeName !== 'ZodObject') throw new Error('Base of schema not an object'); // TODO better errors
+  if (!def) throw new LoaderInputError('Schema not a valid Zod schema');
+  if (def.typeName !== 'ZodObject') throw new LoaderInputError('Base of schema not an object');
 }
 
 export function validateObjectWithZodSchema(
@@ -17,7 +18,13 @@ export function validateObjectWithZodSchema(
   schemaData: ConfigZodSchema,
 ): Record<string, any> {
   const result = schemaData.schema.safeParse(obj);
-  if (!result.success) throw result.error; // TODO better errors
+  if (!result.success) {
+    const validations = result.error.issues.map(issue => ({
+      message: issue.message,
+      path: issue.path.join("."),
+    }))
+    throw new ValidationError(validations);
+  }
   return result.data;
 }
 
