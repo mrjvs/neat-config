@@ -1,9 +1,9 @@
 import { ConfigBuilder, ConfigLoader, loadLoaders } from 'builder/base';
-import { ObjectSchema } from 'joi';
+import { ObjectSchema } from 'utils/joiTypes';
 import { populateLoaderFromCLI } from 'loaders/cli';
 import { DirOptions, populateLoaderFromDir } from 'loaders/dir';
 import { populateLoaderFromEnvironment } from 'loaders/environment';
-import { FileOptions, ParserTypes, ParserTypesType, populateLoaderFromFile } from 'loaders/file';
+import { FileOptions, populateLoaderFromFile } from 'loaders/file';
 import {
   expandFragments,
   extractFragmentDefinitionFromKeys,

@@ -1,4 +1,3 @@
-import { ObjectSchema } from 'joi';
 import { ConfigKeys } from 'loaders/base';
 import { CLILoader, getKeysFromCLI } from 'loaders/cli';
 import { DirLoader, DirOptions, getKeysFromDir } from 'loaders/dir';
@@ -7,7 +6,8 @@ import { FileLoader, FileOptions, getKeysFromFiles, ParserTypesType } from 'load
 import { FragmentLoader } from 'loaders/fragment';
 import { DeepReadonly } from 'utils/freeze';
 import { NamingConventionFunc } from 'utils/translators/conventions';
-import { AnyZodObject, z } from 'zod';
+import { AnyZodObject, TypeOf } from 'utils/zodTypes';
+import { ObjectSchema } from 'utils/joiTypes';
 
 export interface ConfigLoader {
   environment: EnvironmentLoader[];
@@ -27,7 +27,7 @@ export interface ConfigBuilder<Ret = any> {
 
   // schemas
   addJOISchema<Result>(joiSchema: ObjectSchema<Result>): ConfigBuilder<Result>;
-  addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<z.infer<T>>;
+  addZodSchema<T extends AnyZodObject>(zodSchema: T): ConfigBuilder<TypeOf<T>>;
 
   // fragments
   addConfigFragment(name: string, fragment: Record<string, any>): ConfigBuilder<Ret>;
