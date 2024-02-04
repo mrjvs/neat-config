@@ -46,8 +46,8 @@ function handleError(type: AssertionType, error: unknown) {
   throw error;
 }
 
-export function createConfigLoader(options?: ConfigLoaderOptions): ConfigBuilder<any> {
-  const assertionType = options?.assert ?? "pretty";
+export function createConfigLoader(loadOps?: ConfigLoaderOptions): ConfigBuilder<any> {
+  const assertionType = loadOps?.assert ?? "pretty";
   const loaders: ConfigLoader = {
     environment: [],
     files: [],

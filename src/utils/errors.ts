@@ -11,11 +11,13 @@ export class NeatConfigError extends Error {
   }
 
   printAndExit() {
+    // tslint:disable-next-line no-console
     console.error(this.getPretty());
     process.exit(1);
   }
   
   plainPrintAndExit() {
+    // tslint:disable-next-line no-console
     console.error(this.toString());
     process.exit(1);
   }
