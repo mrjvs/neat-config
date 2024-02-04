@@ -6,7 +6,7 @@ describe('integration tests - fragments', () => {
       HI: 'test2',
       USE_FRAGMENTS: 'A,B,c',
     };
-    const config = createConfigLoader()
+    const config = createConfigLoader({ assert: 'throw' })
       .addFromEnvironment()
       .setFragmentKey('use_fragments')
       .addConfigFragment('a', { one: 'one' })
@@ -24,7 +24,7 @@ describe('integration tests - fragments', () => {
     process.env = {
       USE_FRAGMENTS: 'A,B',
     };
-    const config = createConfigLoader()
+    const config = createConfigLoader({ assert: 'throw' })
       .addFromEnvironment()
       .setFragmentKey('use_fragments')
       .addConfigFragment('a', { one: 'one' })
@@ -40,7 +40,7 @@ describe('integration tests - fragments', () => {
       USE_FRAGMENTS: 'A,F',
     };
     const config = () =>
-      createConfigLoader()
+      createConfigLoader({ assert: 'throw' })
         .addFromEnvironment()
         .setFragmentKey('use_fragments')
         .addConfigFragment('a', { one: 'one' })
